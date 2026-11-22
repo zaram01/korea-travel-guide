@@ -1,0 +1,2356 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>국내여행 추천서 - 맞춤형 국내여행 및 지원 혜택 안내서</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: 명조(가이드북 타이틀용) & 고딕(가독성 본문용) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            paper: '#FAF7F2',
+            paperDark: '#F2ECE1',
+            ink: '#1E293B',
+            inkLight: '#475569',
+            forest: '#1B4332',
+            forestLight: '#2D6A4F',
+            terracotta: '#D97706',
+            terracottaLight: '#FEF3C7',
+            borderPaper: '#DCD3C4'
+          },
+          fontFamily: {
+            serif: ['"Gowun Batang"', 'serif'],
+            sans: ['"Noto Sans KR"', 'sans-serif'],
+          },
+          boxShadow: {
+            'book': '0 12px 32px -5px rgba(30, 41, 59, 0.09), 0 4px 12px -2px rgba(30, 41, 59, 0.05)',
+            'card': '0 4px 14px rgba(27, 67, 50, 0.06)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #EFECE6;
+      color: #1E293B;
+      font-family: 'Noto Sans KR', sans-serif;
+      background-image: radial-gradient(#D5CEC2 0.6px, transparent 0.6px);
+      background-size: 16px 16px;
+    }
+
+    /* 가로 펼침형 가이드북 시트 */
+    .guidebook-sheet {
+      background-color: #FAF7F2;
+      background-image: linear-gradient(to right, rgba(0,0,0,0.025) 0%, rgba(255,255,255,0) 2%, rgba(255,255,255,0) 98%, rgba(0,0,0,0.02) 100%);
+    }
+
+    .dashed-divider {
+      border-top: 1.5px dashed #C8BFA8;
+    }
+
+    .stamp-badge {
+      position: relative;
+      border: 1.5px dashed currentColor;
+      transform: rotate(-1.2deg);
+    }
+
+    /* 커스텀 레인지 슬라이더 */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 10px;
+      background: #D6CEBF;
+      border: 1.5px solid #9A8F7D;
+      border-radius: 999px;
+      outline: none;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-runnable-track {
+      height: 10px;
+      border-radius: 999px;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 22px;
+      width: 22px;
+      border-radius: 50%;
+      background: #1B4332;
+      border: 3px solid #FAF7F2;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      margin-top: -7.5px;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+    }
+    input[type="range"]::-moz-range-track {
+      height: 10px;
+      background: #D6CEBF;
+      border: 1.5px solid #9A8F7D;
+      border-radius: 999px;
+    }
+    input[type="range"]::-moz-range-thumb {
+      height: 22px;
+      width: 22px;
+      border-radius: 50%;
+      background: #1B4332;
+      border: 3px solid #FAF7F2;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      cursor: pointer;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.35s ease-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="min-h-screen py-4 px-4 lg:py-6 lg:px-8 flex justify-center items-center">
+
+  <!-- 메인 가로 와이드 가이드북 컨테이너 (16:9 모니터 최적화) -->
+  <div id="app" class="w-full max-w-[1440px] guidebook-sheet rounded-2xl shadow-book border border-borderPaper overflow-hidden transition-all">
+    
+    <!-- 상단 가이드북 헤더 바 -->
+    <header class="px-6 lg:px-10 py-3.5 bg-paperDark/70 border-b border-borderPaper flex items-center justify-between text-xs sm:text-sm text-inkLight">
+      <div class="flex items-center gap-2.5 cursor-pointer" onclick="goToStep(1)">
+        <span class="inline-block w-2.5 h-2.5 rounded-full bg-forest"></span>
+        <span class="font-serif font-bold text-ink tracking-wide">제2026호 · 국내여행 추천서</span>
+        <span class="hidden md:inline text-xs text-inkLight">| 공공데이터 기반 맞춤형 국내여행 &amp; 지원 혜택 안내</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span id="page-indicator" class="font-mono text-xs px-2.5 py-0.5 rounded bg-paper border border-borderPaper text-forest font-semibold">
+          표지 · COVER
+        </span>
+        <button onclick="openApiSetupModal()" id="header-api-btn" class="text-xs px-2.5 py-1 rounded-md border border-borderPaper bg-paper hover:border-forest text-ink flex items-center gap-1.5 cursor-pointer transition-colors" title="공공데이터포털 인증키 설정">
+          <span id="api-status-dot" class="w-2 h-2 rounded-full bg-amber-500"></span>
+          <span id="api-status-label">API 키 설정</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ===================================================================== -->
+    <!-- STEP 1: 표지 (가로 2단 펼침형 와이드 레이아웃) -->
+    <!-- ===================================================================== -->
+    <section id="step-1" class="p-5 sm:p-8 lg:p-10 fade-in">
+      <div class="border-2 border-forest/80 p-6 sm:p-8 lg:p-10 rounded-xl relative">
+        <!-- 상단 모서리 장식 -->
+        <div class="flex justify-between items-center text-xs text-forest font-medium tracking-widest uppercase mb-6">
+          <span>KOREA LOCAL TRAVEL GUIDEBOOK · WIDE EDITION</span>
+          <span>EDITION 2026</span>
+        </div>
+
+        <!-- 가로 12컬럼 2단 배치: 좌측(타이틀 + 시작 CTA) / 우측(가이드북 목차 3파트) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center my-4">
+          
+          <!-- 좌측 7컬럼: 메인 타이틀 및 시작 버튼 -->
+          <div class="lg:col-span-7 text-left space-y-5 lg:pr-6">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-forest/10 text-forest text-xs font-semibold">
+              <i data-lucide="compass" class="w-3.5 h-3.5"></i>
+              <span>공공데이터 기반 AI 맞춤 여행 &amp; 지원 혜택 안내</span>
+            </div>
+            <h1 class="font-serif text-4xl sm:text-5xl xl:text-6xl font-bold text-ink tracking-tight leading-tight">
+              국내여행 추천서
+            </h1>
+            <p class="font-serif text-base sm:text-lg text-inkLight leading-relaxed max-w-2xl">
+              당신의 일정과 예산, 취향에 꼭 맞는 국내 여행지를 찾고<br class="hidden sm:inline" />
+              지자체 여행 지원금과 할인 혜택까지 한눈에 비교할 수 있도록 정리해 드립니다.
+            </p>
+            <div class="pt-3">
+              <button onclick="goToStep(2)" class="w-full sm:w-auto px-8 py-4 bg-forest hover:bg-forestLight text-white font-medium rounded-xl shadow-md transition-all inline-flex items-center justify-center gap-3 text-base sm:text-lg cursor-pointer">
+                <span>나에게 맞는 국내 여행지 찾기</span>
+                <i data-lucide="arrow-right" class="w-5 h-5"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- 우측 5컬럼: 3가지 핵심 안내 요약 -->
+          <div class="lg:col-span-5 space-y-3.5 lg:border-l lg:border-borderPaper lg:pl-8">
+            <div class="text-xs font-bold text-inkLight uppercase tracking-wider mb-1">GUIDEBOOK CONTENTS</div>
+            <div class="bg-paperDark/70 p-4 rounded-xl border border-borderPaper flex items-start gap-3.5">
+              <span class="font-mono text-xs font-bold text-terracotta bg-white px-2 py-1 rounded border border-borderPaper shrink-0">01</span>
+              <div>
+                <div class="font-serif font-bold text-ink text-sm mb-0.5">나만의 여행 조건 설계</div>
+                <p class="text-xs text-inkLight leading-relaxed">일정, 1인 예산, 동행 유형, 원하는 분위기까지 세심하게 반영합니다.</p>
+              </div>
+            </div>
+            <div class="bg-paperDark/70 p-4 rounded-xl border border-borderPaper flex items-start gap-3.5">
+              <span class="font-mono text-xs font-bold text-forest bg-white px-2 py-1 rounded border border-borderPaper shrink-0">02</span>
+              <div>
+                <div class="font-serif font-bold text-ink text-sm mb-0.5">검증된 국내 여행지 추천</div>
+                <p class="text-xs text-inkLight leading-relaxed">한국관광공사 실제 관광지·축제 데이터를 바탕으로 3곳을 엄선합니다.</p>
+              </div>
+            </div>
+            <div class="bg-paperDark/70 p-4 rounded-xl border border-borderPaper flex items-start gap-3.5">
+              <span class="font-mono text-xs font-bold text-terracotta bg-white px-2 py-1 rounded border border-borderPaper shrink-0">03</span>
+              <div>
+                <div class="font-serif font-bold text-ink text-sm mb-0.5">정부·지자체 지원 혜택 비교</div>
+                <p class="text-xs text-inkLight leading-relaxed">인구감소지역 지원, 숙박·관광 할인 정보와 공식 신청처를 연결합니다.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 하단 바: 좌측 운영 원칙 안내 + 우측 구석 소형 API 인증키 입력 -->
+        <div class="mt-8 pt-4 dashed-divider flex flex-col lg:flex-row items-start lg:items-end justify-between gap-4">
+          <p class="text-[11px] sm:text-xs text-inkLight leading-relaxed max-w-2xl">
+            ※ <strong>안내 원칙:</strong> 본 서비스는 공공데이터포털 및 공식 자료를 연결하여 여행 정보와 지원 정책을 소개하는 정보 제공 서비스입니다. 모든 지자체 혜택이 포함되지는 않으며, 실제 신청·심사는 해당 지자체 및 운영기관에서 진행됩니다.
+          </p>
+
+          <!-- 우측 하단 구석 미니 API 인증키 설정 박스 -->
+          <div class="w-full lg:w-auto shrink-0 bg-paperDark/80 px-3 py-2 rounded-lg border border-borderPaper flex flex-wrap items-center gap-2 self-end">
+            <span class="text-[11px] font-semibold text-forest flex items-center gap-1" title="관리자/테스트용 공공데이터포털 일반 인증키">
+              <i data-lucide="key-round" class="w-3 h-3"></i>
+              <span>API 키:</span>
+            </span>
+            <input type="password" id="cover-api-key-input" placeholder="인증키 입력(선택)" class="w-36 sm:w-40 px-2 py-1 rounded border border-borderPaper bg-paper text-[11px] focus:outline-none focus:border-forest" />
+            <button type="button" onclick="saveApiKeyFromCover()" class="px-2.5 py-1 rounded bg-ink hover:bg-slate-700 text-white text-[11px] font-medium cursor-pointer">
+              적용
+            </button>
+            <span id="cover-key-badge" class="text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-medium">기본모드</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- STEP 2: 여행 조건 입력 화면 (가로 2컬럼 병렬 폼 레이아웃) -->
+    <!-- ===================================================================== -->
+    <section id="step-2" class="hidden p-6 sm:p-8 lg:p-10 fade-in">
+      <div class="flex flex-wrap items-end justify-between gap-2 mb-6 pb-4 border-b border-borderPaper">
+        <div>
+          <div class="text-xs font-bold text-terracotta tracking-wider uppercase mb-1">CHAPTER 01 · TRAVEL PREFERENCES</div>
+          <h2 class="font-serif text-2xl sm:text-3xl font-bold text-ink">맞춤 여행 조건 작성하기</h2>
+        </div>
+        <p class="text-xs sm:text-sm text-inkLight">좌·우 항목을 작성하시면 관광정보와 지자체 지원 혜택을 대조하여 가로 추천서를 발행합니다.</p>
+      </div>
+
+      <form id="travel-form" onsubmit="handleGenerateRecommendation(event)" class="space-y-6">
+        
+        <!-- 가로 12컬럼 2단 입력 그리드 -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          
+          <!-- 좌측 컬럼 (6칸): 1. 날짜 / 2. 인원 및 동행 / 3. 1인당 예산 -->
+          <div class="lg:col-span-6 space-y-5">
+            
+            <!-- 1. 여행 날짜 -->
+            <div class="bg-white/75 p-5 rounded-xl border border-borderPaper">
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                <label class="font-serif font-bold text-base sm:text-lg text-ink flex items-center gap-2">
+                  <span class="w-6 h-6 rounded-full bg-forest text-white text-xs flex items-center justify-center font-sans">1</span>
+                  언제 떠나시나요? <span class="text-xs font-sans font-normal text-terracotta">*필수</span>
+                </label>
+                <label class="inline-flex items-center gap-1.5 text-xs text-ink cursor-pointer select-none bg-paperDark px-2.5 py-1 rounded-lg border border-borderPaper">
+                  <input type="checkbox" id="date-undecided" onchange="toggleDateUndecided()" class="accent-forest w-3.5 h-3.5 rounded" />
+                  <span>날짜 미정 (계절 선택)</span>
+                </label>
+              </div>
+
+              <div id="date-picker-group" class="grid grid-cols-2 gap-3">
+                <div>
+                  <span class="block text-xs text-inkLight mb-1">출발일</span>
+                  <input type="date" id="start-date" onchange="calculateTripDuration()" class="w-full px-3 py-2 rounded-lg border border-borderPaper bg-paper text-sm focus:outline-none focus:border-forest" />
+                </div>
+                <div>
+                  <span class="block text-xs text-inkLight mb-1">도착일</span>
+                  <input type="date" id="end-date" onchange="calculateTripDuration()" class="w-full px-3 py-2 rounded-lg border border-borderPaper bg-paper text-sm focus:outline-none focus:border-forest" />
+                </div>
+              </div>
+
+              <div id="season-picker-group" class="hidden">
+                <div class="grid grid-cols-4 gap-2">
+                  <button type="button" onclick="selectSeason('봄 (3~5월)', this)" class="season-btn py-2 px-2 rounded-lg border border-borderPaper bg-paper text-xs font-medium hover:border-forest">🌸 봄</button>
+                  <button type="button" onclick="selectSeason('여름 (6~8월)', this)" class="season-btn py-2 px-2 rounded-lg border border-borderPaper bg-paper text-xs font-medium hover:border-forest">🌿 여름</button>
+                  <button type="button" onclick="selectSeason('가을 (9~11월)', this)" class="season-btn py-2 px-2 rounded-lg border border-forest bg-forest text-white text-xs font-medium">🍁 가을</button>
+                  <button type="button" onclick="selectSeason('겨울 (12~2월)', this)" class="season-btn py-2 px-2 rounded-lg border border-borderPaper bg-paper text-xs font-medium hover:border-forest">❄️ 겨울</button>
+                </div>
+              </div>
+
+              <div id="duration-badge" class="mt-2.5 text-xs text-forest font-medium flex items-center gap-1.5">
+                <i data-lucide="calendar-check" class="w-3.5 h-3.5 shrink-0"></i>
+                <span id="duration-text">1박 2일 숙박 여행 (기간 내 축제 및 지원사업 기간을 자동 대조합니다)</span>
+              </div>
+            </div>
+
+            <!-- 2. 여행 인원 및 동행 유형 -->
+            <div class="bg-white/75 p-5 rounded-xl border border-borderPaper">
+              <label class="font-serif font-bold text-base sm:text-lg text-ink flex items-center gap-2 mb-3">
+                <span class="w-6 h-6 rounded-full bg-forest text-white text-xs flex items-center justify-center font-sans">2</span>
+                누구와 함께 떠나시나요? <span class="text-xs font-sans font-normal text-terracotta">*필수</span>
+              </label>
+
+              <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-start">
+                <div class="sm:col-span-4">
+                  <span class="block text-xs text-inkLight mb-1.5">총 인원</span>
+                  <div class="flex items-center gap-2">
+                    <button type="button" onclick="updatePeopleCount(-1)" class="w-9 h-9 rounded-lg border border-borderPaper bg-paper hover:bg-paperDark flex items-center justify-center font-bold text-base cursor-pointer">-</button>
+                    <div class="px-3 py-1.5 rounded-lg bg-paper border border-borderPaper font-bold text-sm min-w-[60px] text-center">
+                      <span id="people-count">2</span>명
+                    </div>
+                    <button type="button" onclick="updatePeopleCount(1)" class="w-9 h-9 rounded-lg border border-borderPaper bg-paper hover:bg-paperDark flex items-center justify-center font-bold text-base cursor-pointer">+</button>
+                  </div>
+                </div>
+
+                <div class="sm:col-span-8">
+                  <span class="block text-xs text-inkLight mb-1.5">동행 유형</span>
+                  <div class="grid grid-cols-4 gap-1.5">
+                    <button type="button" onclick="selectCompanion('혼자', this)" class="companion-btn py-2 px-2 rounded-lg border border-borderPaper bg-paper text-xs sm:text-sm font-medium">혼자</button>
+                    <button type="button" onclick="selectCompanion('연인과', this)" class="companion-btn py-2 px-2 rounded-lg border border-forest bg-forest text-white text-xs sm:text-sm font-medium">연인과</button>
+                    <button type="button" onclick="selectCompanion('친구들과', this)" class="companion-btn py-2 px-2 rounded-lg border border-borderPaper bg-paper text-xs sm:text-sm font-medium">친구들과</button>
+                    <button type="button" onclick="selectCompanion('가족과', this)" class="companion-btn py-2 px-2 rounded-lg border border-borderPaper bg-paper text-xs sm:text-sm font-medium">가족과</button>
+                  </div>
+
+                  <div id="child-option-box" class="hidden mt-2.5 pt-2 border-t border-borderPaper flex flex-wrap gap-4">
+                    <label class="inline-flex items-center gap-1.5 text-xs sm:text-sm text-ink cursor-pointer">
+                      <input type="checkbox" id="with-children" class="accent-forest w-4 h-4 rounded" />
+                      <span>👶 어린이 동반</span>
+                    </label>
+                    <label class="inline-flex items-center gap-1.5 text-xs sm:text-sm text-ink cursor-pointer">
+                      <input type="checkbox" id="with-pets" class="accent-forest w-4 h-4 rounded" />
+                      <span>🐶 애견 동반</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. 1인당 여행 예산 -->
+            <div class="bg-white/75 p-5 rounded-xl border border-borderPaper">
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                <label class="font-serif font-bold text-base sm:text-lg text-ink flex items-center gap-2">
+                  <span class="w-6 h-6 rounded-full bg-forest text-white text-xs flex items-center justify-center font-sans">3</span>
+                  1인당 예산 (대략) <span class="text-xs font-sans font-normal text-terracotta">*필수</span>
+                </label>
+                <div class="text-xs font-medium text-forest bg-forest/10 px-2.5 py-1 rounded-lg">
+                  총 예산 (<span id="budget-people-label">2</span>인): <strong id="total-budget-display">50만 원</strong>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <div class="flex-1">
+                  <input type="range" id="budget-slider" min="5" max="100" step="1" value="25" oninput="syncBudgetFromSlider(this.value)" class="w-full" />
+                  <div class="flex justify-between text-[11px] font-medium text-inkLight mt-1.5">
+                    <span>최저 5만 원</span>
+                    <span>30만 원</span>
+                    <span>60만 원</span>
+                    <span>최고 100만 원+</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-1.5 shrink-0">
+                  <input type="number" id="budget-input" min="5" max="500" step="1" value="25" oninput="syncBudgetFromInput(this.value)" class="w-20 px-2.5 py-1.5 rounded-lg border border-borderPaper bg-paper text-right font-bold text-sm text-ink focus:outline-none focus:border-forest" />
+                  <span class="text-xs font-medium text-ink">만 원</span>
+                </div>
+              </div>
+              <p class="text-[11px] text-inkLight mt-2">
+                ※ 숙박·식비·체험비를 포함한 1인당 희망 예산입니다. 미확인 비용은 확정 금액으로 표기하지 않습니다.
+              </p>
+            </div>
+          </div>
+
+          <!-- 우측 컬럼 (6칸): 4. 여행 취향 및 분위기 / 5. 희망 지역·이동수단·거주지 -->
+          <div class="lg:col-span-6 space-y-5">
+            
+            <!-- 4. 여행 취향 및 테마 -->
+            <div class="bg-white/75 p-5 rounded-xl border border-borderPaper">
+              <label class="font-serif font-bold text-base sm:text-lg text-ink flex items-center gap-2 mb-1">
+                <span class="w-6 h-6 rounded-full bg-forest text-white text-xs flex items-center justify-center font-sans">4</span>
+                원하는 여행 취향과 분위기 <span class="text-xs font-sans font-normal text-terracotta">*복수 선택</span>
+              </label>
+              <p class="text-xs text-inkLight mb-3">경험 태그를 고르거나 떠올리는 분위기를 자유롭게 적어주세요.</p>
+
+              <div class="flex flex-wrap gap-1.5 mb-3.5" id="theme-tags">
+                <button type="button" onclick="toggleThemeTag(this, '조용한 소도시')" class="theme-tag px-3 py-1.5 rounded-full border border-forest bg-forest text-white text-xs sm:text-sm font-medium transition-all">🏘️ 조용한 소도시</button>
+                <button type="button" onclick="toggleThemeTag(this, '산·숲 힐링')" class="theme-tag px-3 py-1.5 rounded-full border border-forest bg-forest text-white text-xs sm:text-sm font-medium transition-all">🌲 산·숲 힐링</button>
+                <button type="button" onclick="toggleThemeTag(this, '바다·해변')" class="theme-tag px-3 py-1.5 rounded-full border border-borderPaper bg-paper text-ink text-xs sm:text-sm font-medium hover:border-forest transition-all">🌊 바다·해변</button>
+                <button type="button" onclick="toggleThemeTag(this, '축제·행사')" class="theme-tag px-3 py-1.5 rounded-full border border-borderPaper bg-paper text-ink text-xs sm:text-sm font-medium hover:border-forest transition-all">🎪 축제·행사</button>
+                <button type="button" onclick="toggleThemeTag(this, '역사·문화')" class="theme-tag px-3 py-1.5 rounded-full border border-borderPaper bg-paper text-ink text-xs sm:text-sm font-medium hover:border-forest transition-all">🏛️ 역사·문화</button>
+                <button type="button" onclick="toggleThemeTag(this, '미식·로컬맛집')" class="theme-tag px-3 py-1.5 rounded-full border border-borderPaper bg-paper text-ink text-xs sm:text-sm font-medium hover:border-forest transition-all">🍲 미식·로컬맛집</button>
+                <button type="button" onclick="toggleThemeTag(this, '전통시장·골목')" class="theme-tag px-3 py-1.5 rounded-full border border-borderPaper bg-paper text-ink text-xs sm:text-sm font-medium hover:border-forest transition-all">🏮 전통시장·골목</button>
+                <button type="button" onclick="toggleThemeTag(this, '걷기·트레킹')" class="theme-tag px-3 py-1.5 rounded-full border border-borderPaper bg-paper text-ink text-xs sm:text-sm font-medium hover:border-forest transition-all">🥾 걷기·트레킹</button>
+                <button type="button" onclick="toggleThemeTag(this, '온천·휴식')" class="theme-tag px-3 py-1.5 rounded-full border border-borderPaper bg-paper text-ink text-xs sm:text-sm font-medium hover:border-forest transition-all">♨️ 온천·휴식</button>
+                <button type="button" onclick="toggleThemeTag(this, '체험·공방')" class="theme-tag px-3 py-1.5 rounded-full border border-borderPaper bg-paper text-ink text-xs sm:text-sm font-medium hover:border-forest transition-all">🎨 체험·공방</button>
+              </div>
+
+              <div>
+                <input type="text" id="free-mood-input" placeholder="자유 분위기 입력 (선택) 예: 조용한 소도시 골목 산책, 별을 볼 수 있는 곳" class="w-full px-3.5 py-2.5 rounded-lg border border-borderPaper bg-paper text-xs sm:text-sm focus:outline-none focus:border-forest" />
+              </div>
+            </div>
+
+            <!-- 5. 희망 여행 지역 & 이동 수단 & 거주지 -->
+            <div class="bg-white/75 p-5 rounded-xl border border-borderPaper space-y-4">
+              <div>
+                <label class="font-serif font-bold text-base sm:text-lg text-ink flex items-center gap-2 mb-2.5">
+                  <span class="w-6 h-6 rounded-full bg-forest text-white text-xs flex items-center justify-center font-sans">5</span>
+                  희망 여행 지역 &amp; 이동 조건 <span class="text-xs font-sans font-normal text-inkLight">(선택)</span>
+                </label>
+
+                <div class="space-y-2 mb-2.5">
+                  <button type="button" onclick="setRegionMode('all', this)" class="region-mode-btn w-full py-2 px-3 rounded-lg border border-forest bg-forest text-white text-xs sm:text-sm font-medium">
+                    🇰🇷 전국 어디든 좋아요 (전체 추천)
+                  </button>
+                  <div class="grid grid-cols-2 gap-2">
+                    <button type="button" onclick="setRegionMode('include', this)" class="region-mode-btn py-2 px-2.5 rounded-lg border border-borderPaper bg-paper text-ink text-xs sm:text-sm font-medium flex items-center justify-center gap-1.5">
+                      <span>✅ 원하는 지역 선택</span>
+                      <span id="include-count-badge" class="hidden text-[11px] px-1.5 py-0.2 rounded-full bg-terracotta text-white font-bold">0</span>
+                    </button>
+                    <button type="button" onclick="setRegionMode('exclude', this)" class="region-mode-btn py-2 px-2.5 rounded-lg border border-borderPaper bg-paper text-ink text-xs sm:text-sm font-medium flex items-center justify-center gap-1.5">
+                      <span>🚫 특정 지역 제외</span>
+                      <span id="exclude-count-badge" class="hidden text-[11px] px-1.5 py-0.2 rounded-full bg-rose-600 text-white font-bold">0</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div id="region-selector-box" class="hidden p-3 rounded-lg bg-paperDark/60 border border-borderPaper">
+                  <div class="flex items-center justify-between mb-2">
+                    <p id="region-selector-guide" class="text-[11px] font-medium text-ink">여행하고 싶은 시·도를 선택해 주세요</p>
+                    <button type="button" onclick="clearCurrentRegionSelection()" class="text-[11px] text-inkLight underline hover:text-ink cursor-pointer">초기화</button>
+                  </div>
+                  <div class="flex flex-wrap gap-1" id="sido-list"></div>
+                </div>
+              </div>
+
+              <div class="dashed-divider pt-3.5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block font-serif font-bold text-sm text-ink mb-1.5">주요 이동 수단</label>
+                  <div class="grid grid-cols-3 gap-1.5">
+                    <button type="button" onclick="selectTransport('상관없음', this)" class="transport-btn py-1.5 px-1.5 rounded-lg border border-forest bg-forest text-white text-xs font-medium">상관없음</button>
+                    <button type="button" onclick="selectTransport('자가용', this)" class="transport-btn py-1.5 px-1.5 rounded-lg border border-borderPaper bg-paper text-ink text-xs font-medium">🚗 자가용</button>
+                    <button type="button" onclick="selectTransport('대중교통', this)" class="transport-btn py-1.5 px-1.5 rounded-lg border border-borderPaper bg-paper text-ink text-xs font-medium">🚆 대중교통</button>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block font-serif font-bold text-sm text-ink mb-1.5">현재 거주지 <span class="text-[11px] font-sans font-normal text-inkLight">(혜택 판별용)</span></label>
+                  <div class="grid grid-cols-2 gap-1.5">
+                    <select id="residence-sido" class="px-2 py-1.5 rounded-lg border border-borderPaper bg-paper text-xs focus:outline-none focus:border-forest">
+                      <option value="">시·도 선택</option>
+                      <option value="서울특별시">서울특별시</option>
+                      <option value="경기도">경기도</option>
+                      <option value="인천광역시">인천광역시</option>
+                      <option value="부산광역시">부산광역시</option>
+                      <option value="대구광역시">대구광역시</option>
+                      <option value="대전광역시">대전광역시</option>
+                      <option value="광주광역시">광주광역시</option>
+                      <option value="울산광역시">울산광역시</option>
+                      <option value="강원특별자치도">강원특별자치도</option>
+                      <option value="충청북도">충청북도</option>
+                      <option value="충청남도">충청남도</option>
+                      <option value="전북특별자치도">전북특별자치도</option>
+                      <option value="전라남도">전라남도</option>
+                      <option value="경상북도">경상북도</option>
+                      <option value="경상남도">경상남도</option>
+                      <option value="제주특별자치도">제주특별자치도</option>
+                    </select>
+                    <input type="text" id="residence-sigungu" placeholder="시·군·구" class="px-2.5 py-1.5 rounded-lg border border-borderPaper bg-paper text-xs focus:outline-none focus:border-forest" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 하단 버튼 영역 -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-borderPaper">
+          <button type="button" onclick="goToStep(1)" class="w-full sm:w-auto px-5 py-3 rounded-xl border border-borderPaper bg-paper hover:bg-paperDark text-ink text-sm font-medium cursor-pointer">
+            ← 표지로 돌아가기
+          </button>
+          <button type="submit" id="submit-recommend-btn" class="w-full sm:w-auto px-10 py-3.5 rounded-xl bg-forest hover:bg-forestLight text-white font-semibold text-base shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
+            <i data-lucide="book-open-check" class="w-5 h-5"></i>
+            <span id="submit-btn-text">나만의 여행 추천서 발행하기</span>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- STEP 3: 추천 결과 및 지원 혜택 비교 화면 (가로 3열 와이드 그리드) -->
+    <!-- ===================================================================== -->
+    <section id="step-3" class="hidden p-6 sm:p-8 lg:p-10 fade-in">
+      
+      <!-- 상단 상태 및 조건 요약 와이드 바 -->
+      <div class="grid grid-cols-1 xl:grid-cols-12 gap-3 mb-5">
+        <div id="live-api-banner" class="xl:col-span-4 px-4 py-3 rounded-xl border text-xs flex items-center justify-between gap-2 bg-paperDark border-borderPaper text-ink">
+          <span id="live-api-status-text">데이터 조회 상태 확인 중...</span>
+          <button type="button" onclick="openApiSetupModal()" class="underline font-semibold text-forest shrink-0 cursor-pointer">키 설정</button>
+        </div>
+
+        <div class="xl:col-span-8 bg-paperDark px-4 py-3 rounded-xl border border-borderPaper flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div id="summary-chips" class="flex flex-wrap gap-1.5 text-xs text-ink"></div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button onclick="goToStep(2)" class="px-3 py-1.5 rounded-lg border border-borderPaper bg-paper hover:bg-white text-xs font-medium text-ink flex items-center gap-1 cursor-pointer">
+              <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5"></i>
+              <span>조건 수정</span>
+            </button>
+            <button id="toggle-compare-btn" onclick="toggleCompareView()" class="px-3 py-1.5 rounded-lg bg-terracotta hover:bg-amber-700 text-white text-xs font-semibold flex items-center gap-1 cursor-pointer shadow-sm">
+              <i data-lucide="columns" class="w-3.5 h-3.5"></i>
+              <span id="compare-btn-text">표 형태로 전환</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 정보 정확성 및 한계 안내 배너 -->
+      <div class="bg-amber-50/90 border border-amber-300/80 rounded-xl px-4 py-3 mb-6 flex items-center gap-2.5 text-xs text-ink">
+        <i data-lucide="info" class="w-4 h-4 text-terracotta shrink-0"></i>
+        <div>
+          <strong class="text-amber-900">안내 기준:</strong> 한국관광공사 관광정보 API 및 확인된 지자체 공식 자료 기준이며, <strong>모든 지원 사업이 포함되지 않으므로</strong> 최종 결정 전 반드시 각 카드의 <strong>[공식 출처]</strong>를 확인해 주세요.
+        </div>
+      </div>
+
+      <!-- 뷰 1: 가로 3열 나란히 카드 그리드 -->
+      <div id="cards-view" class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+        <!-- JS로 추천 여행지 3곳 가로 카드 생성 -->
+      </div>
+
+      <!-- 뷰 2: 상세 비교표 모드 -->
+      <div id="compare-view" class="hidden overflow-x-auto bg-white/85 rounded-xl border border-borderPaper p-5">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-serif text-xl font-bold text-ink">추천 여행지 &amp; 지원 혜택 항목별 비교표</h3>
+          <button onclick="toggleCompareView()" class="text-xs text-forest underline font-medium cursor-pointer">← 3열 카드 보기로 돌아가기</button>
+        </div>
+        <table class="w-full text-left border-collapse min-w-[760px]">
+          <thead>
+            <tr class="border-b-2 border-forest text-sm font-serif text-ink" id="compare-table-head"></tr>
+          </thead>
+          <tbody class="divide-y divide-borderPaper text-xs sm:text-sm" id="compare-table-body"></tbody>
+        </table>
+      </div>
+
+      <!-- 하단 푸터 바 (좌측: 출처 / 중앙: 다른 추천 여행지 보기 버튼 / 우측: 처음 표지로 이동) -->
+      <div class="mt-8 pt-5 dashed-divider grid grid-cols-1 md:grid-cols-3 items-center gap-4 text-xs text-inkLight">
+        <div class="text-center md:text-left">
+          <span>데이터 출처: 한국관광공사 관광정보 API · 행정안전부 공공서비스 API</span>
+        </div>
+        <div class="flex justify-center">
+          <button type="button" id="next-batch-btn" onclick="showNextDestinations()" class="px-5 py-2.5 rounded-xl bg-forest hover:bg-forestLight text-white text-xs sm:text-sm font-semibold shadow-sm transition-all inline-flex items-center gap-2 cursor-pointer">
+            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+            <span id="next-batch-text">다른 추천 여행지 보기</span>
+          </button>
+        </div>
+        <div class="text-center md:text-right">
+          <button onclick="goToStep(1)" class="text-forest font-semibold hover:underline cursor-pointer">처음 표지로 이동 →</button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- 모달 1: 지원 혜택 상세 조건 및 공식 출처 안내 모달 -->
+  <!-- ===================================================================== -->
+  <div id="policy-modal" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden items-center justify-center p-4 z-50">
+    <div class="bg-paper border border-borderPaper rounded-2xl max-w-lg w-full p-6 shadow-2xl fade-in">
+      <div class="flex items-start justify-between gap-3 pb-4 border-b border-borderPaper">
+        <div>
+          <span id="modal-badge" class="inline-block text-xs font-bold px-2.5 py-0.5 rounded border mb-1.5">상태 배지</span>
+          <h3 id="modal-title" class="font-serif text-xl font-bold text-ink">지원 사업명</h3>
+        </div>
+        <button onclick="closePolicyModal()" class="p-1 text-inkLight hover:text-ink cursor-pointer">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="py-4 space-y-3 text-sm text-ink">
+        <div>
+          <div class="text-xs font-bold text-forest mb-0.5">주요 지원 혜택</div>
+          <p id="modal-benefit" class="text-ink bg-white/80 p-3 rounded-lg border border-borderPaper"></p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <div class="text-xs font-bold text-inkLight mb-0.5">운영 및 신청 기간</div>
+            <p id="modal-period" class="text-xs font-medium"></p>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-inkLight mb-0.5">주관 및 운영기관</div>
+            <p id="modal-org" class="text-xs font-medium"></p>
+          </div>
+        </div>
+        <div>
+          <div class="text-xs font-bold text-terracotta mb-0.5">지원 자격 및 유의사항</div>
+          <p id="modal-condition" class="text-xs text-inkLight leading-relaxed bg-paperDark/60 p-3 rounded-lg"></p>
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-borderPaper flex flex-col sm:flex-row items-center justify-between gap-2">
+        <span class="text-[11px] text-inkLight">신청·심사는 주관기관 공식 페이지에서 진행됩니다.</span>
+        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+          <button onclick="closePolicyModal()" class="px-4 py-2 rounded-lg border border-borderPaper text-xs font-medium cursor-pointer">닫기</button>
+          <a id="modal-official-link" href="#" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-lg bg-forest hover:bg-forestLight text-white text-xs font-semibold inline-flex items-center gap-1.5">
+            <span>공식 안내 바로가기</span>
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- 모달 2: 공공데이터포털 인증키 설정 모달 -->
+  <!-- ===================================================================== -->
+  <div id="api-modal" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden items-center justify-center p-4 z-50">
+    <div class="bg-paper border border-borderPaper rounded-2xl max-w-xl w-full p-6 shadow-2xl fade-in">
+      <div class="flex items-center justify-between pb-3 border-b border-borderPaper">
+        <h3 class="font-serif text-lg font-bold text-ink flex items-center gap-2">
+          <i data-lucide="key-round" class="w-5 h-5 text-forest"></i>
+          <span>공공데이터포털 인증키 설정</span>
+        </h3>
+        <button onclick="closeApiSetupModal()" class="p-1 text-inkLight hover:text-ink cursor-pointer">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div class="py-4 space-y-4 text-xs sm:text-sm text-ink leading-relaxed">
+        <div>
+          <label class="block text-xs font-bold text-ink mb-1.5">공공데이터포털 일반 인증키 (Encoding 또는 Decoding)</label>
+          <input type="password" id="modal-api-key-input" placeholder="발급받으신 일반 인증키를 붙여넣어 주세요" class="w-full px-3.5 py-2.5 rounded-lg border border-borderPaper bg-white text-sm focus:outline-none focus:border-forest" />
+          <p class="text-[11px] text-inkLight mt-1">
+            ※ 인증키는 현재 브라우저 세션에만 임시 저장되며 외부 서버로 전송되지 않습니다.
+          </p>
+        </div>
+
+        <ul class="space-y-2 bg-white/80 p-4 rounded-xl border border-borderPaper text-xs">
+          <li><strong>1. 한국관광공사_국문 관광정보 서비스 (v2/v1 자동 대응):</strong> 실제 관광지·축제 목록 및 대표 사진 조회</li>
+          <li><strong>2. 한국관광공사_관광사진 정보_GW:</strong> 해당 지역의 고화질 대표 관광 사진 실시간 조회</li>
+          <li><strong>3. 행정안전부_대한민국 공공서비스(혜택) 정보:</strong> 관광·여행 키워드 기반 지원 정책 실시간 검색</li>
+        </ul>
+      </div>
+      <div class="flex items-center justify-between pt-2 border-t border-borderPaper">
+        <button type="button" onclick="clearSavedApiKey()" class="text-xs text-rose-700 underline cursor-pointer">저장된 키 삭제</button>
+        <div class="flex gap-2">
+          <button type="button" onclick="closeApiSetupModal()" class="px-4 py-2 rounded-lg border border-borderPaper text-xs font-medium cursor-pointer">닫기</button>
+          <button type="button" onclick="saveApiKeyFromModal()" class="px-5 py-2 rounded-lg bg-forest hover:bg-forestLight text-white text-xs font-semibold cursor-pointer">저장 및 적용</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // 1. 전역 상태 관리 및 시·도 상수
+    // =========================================================================
+    const SIDO_OPTIONS = [
+      '서울', '부산', '대구', '인천', '광주', '대전', '울산', '세종',
+      '경기', '강원', '충북', '충남', '전북', '전남', '경북', '경남', '제주'
+    ];
+
+    const appState = {
+      step: 1,
+      apiKey: '',
+      isCompareMode: false,
+      allScoredDestinations: [],
+      pageOffset: 0,
+      currentResults: [],
+      preferences: {
+        isDateUndecided: false,
+        startDate: '',
+        endDate: '',
+        season: '가을 (9~11월)',
+        durationLabel: '1박 2일 숙박 여행',
+        peopleCount: 2,
+        companion: '연인과',
+        withChildren: false,
+        withPets: false,
+        budgetPerPerson: 25,
+        themes: ['조용한 소도시', '산·숲 힐링'],
+        freeMood: '',
+        regionMode: 'all',
+        includedRegions: [],
+        excludedRegions: [],
+        transport: '상관없음',
+        residenceSido: '',
+        residenceSigungu: ''
+      }
+    };
+
+    // =========================================================================
+    // 2. 전국 17개 시·도 권역별 후보 여행지 데이터베이스 (총 21곳)
+    // =========================================================================
+    const TRAVEL_DESTINATIONS_DB = [
+      {
+        id: 'yeongwol',
+        regionCode: '강원',
+        areaCode: '32',
+        keyword: '영월',
+        name: '강원 영월군',
+        subtitle: '동강의 물길과 별빛이 머무는 고요한 산골 소도시',
+        tags: ['조용한 소도시', '산·숲 힐링', '역사·문화', '걷기·트레킹'],
+        transportFriendly: ['자가용', '대중교통', '상관없음'],
+        budgetLevel: 'low-mid',
+        kidFriendly: true,
+        petFriendly: true,
+        illustrationTheme: 'mountain',
+        photoUrl: '',
+        matchReasonTemplate: (prefs) => {
+          const moodText = prefs.freeMood ? `입력하신 '${prefs.freeMood}' 분위기와 잘 어울리며, ` : '';
+          const petText = prefs.withPets ? '반려견과 함께 걸을 수 있는 야외 산책 코스가 잘 조성되어 있고, ' : '';
+          return `${moodText}${petText}번잡한 관광지 대신 한적한 산과 숲 속에서 여유를 즐기고 싶은 ${prefs.companion} 여행에 제격입니다. 청령포의 고즈넉한 숲길과 별마로천문대의 밤하늘이 ${prefs.durationLabel} 일정에 깊은 휴식을 선사합니다.`;
+        },
+        spots: [
+          { name: '청령포', category: '산·숲 힐링', desc: '삼면이 강으로 둘러싸인 육지 속의 섬, 울창한 소나무 숲길 산책' },
+          { name: '별마로천문대', category: '자연·야경', desc: '해발 799m 봉래산 정상에서 만나는 영월 읍내 야경과 별자리 관측' },
+          { name: '젊은달와이파크', category: '체험·전시', desc: '붉은 대나무 조형물과 현대미술이 어우러진 복합예술공간' }
+        ],
+        costNote: '1박 2일 기준 1인 약 18~28만 원 내외 예상 (확정 금액 아님)',
+        policy: {
+          status: 'eligible',
+          statusLabel: '조건 부합 가능성 높음',
+          title: '영월군 디지털 관광주민증 및 주요 관광지 할인 혜택',
+          benefit: '청령포·장릉·고씨굴 등 주요 유료 관광지 입장료 30~50% 할인 및 제휴 카페·숙소 우대',
+          period: '상시 운영 (여행 당일 현장 QR 인증)',
+          org: '한국관광공사 · 영월군청 문화관광과',
+          condition: '영월군 외 타 지역 거주자 대상(주민등록지 기준). 대한민국 구석구석 앱에서 디지털 관광주민증 무료 발급 후 현장 제시 시 즉시 적용됩니다.',
+          officialUrl: 'https://korean.visitkorea.or.kr'
+        }
+      },
+      {
+        id: 'gangneung',
+        regionCode: '강원',
+        areaCode: '32',
+        keyword: '강릉',
+        name: '강원 강릉시',
+        subtitle: '동해의 푸른 수평선과 커피거리, KTX 접근성이 뛰어난 해양 문화도시',
+        tags: ['바다·해변', '미식·로컬맛집', '전통시장·골목', '걷기·트레킹'],
+        transportFriendly: ['대중교통', '자가용', '상관없음'],
+        budgetLevel: 'mid',
+        kidFriendly: true,
+        petFriendly: true,
+        illustrationTheme: 'bay',
+        photoUrl: '',
+        matchReasonTemplate: (prefs) => `KTX로 편리하게 이동해 탁 트인 동해 바다와 솔향 가득한 해변 산책로, 활기찬 중앙시장 미식을 한 번에 누릴 수 있는 ${prefs.companion} 추천 코스입니다.`,
+        spots: [
+          { name: '안목해변 커피거리', category: '바다·해변', desc: '동해 파도를 바라보며 로스터리 카페를 즐기는 강릉 대표 해변 산책로' },
+          { name: '강릉 중앙시장', category: '전통시장·골목', desc: '닭강정, 어묵고로케, 장칼국수 등 강릉 로컬 먹거리가 모인 전통시장' },
+          { name: '오죽헌 & 선교장', category: '역사·문화', desc: '울창한 대나무 숲과 전통 한옥의 고즈넉한 품격을 느끼는 문화유산' }
+        ],
+        costNote: '1박 2일 기준 1인 약 22~35만 원 내외 예상',
+        policy: {
+          status: 'check',
+          statusLabel: '세부 조건 확인 필요',
+          title: '강릉 관광택시 및 KTX 연계 관광패스 할인 안내',
+          benefit: '타 지역 열차 이용객 대상 관광택시 요금 지원 및 주요 유료 관광지 패키지 할인',
+          period: '상시 운영 (예산 소진 시 변동 가능)',
+          org: '강릉시청 관광정책과 · 강릉관광개발공사',
+          condition: '강릉시 공식 관광포털(비짓강릉)에서 사전 예약 시 적용 가능 여부를 확인해 주세요.',
+          officialUrl: 'https://www.gn.go.kr/tour'
+        }
+      },
+      {
+        id: 'gangjin',
+        regionCode: '전남',
+        areaCode: '38',
+        keyword: '강진',
+        name: '전남 강진군',
+        subtitle: '남도의 다산 정약용 유배길과 한정식 미식, 청자 축제가 살아있는 고장',
+        tags: ['조용한 소도시', '바다·해변', '미식·로컬맛집', '역사·문화', '축제·행사', '체험·공방'],
+        transportFriendly: ['자가용', '상관없음'],
+        budgetLevel: 'mid',
+        kidFriendly: true,
+        petFriendly: true,
+        illustrationTheme: 'bay',
+        photoUrl: '',
+        matchReasonTemplate: (prefs) => {
+          const peopleNote = prefs.peopleCount >= 2 ? `${prefs.peopleCount}인 동행 시 지역 여행 지원금 혜택 체감이 매우 큰 곳으로, ` : '';
+          return `${peopleNote}고즈넉한 남도의 바다 풍경과 풍성한 로컬 미식, 계절별 지역 축제를 함께 원하는 일정에 안성맞춤입니다. 가우도 출렁다리의 해상 산책과 다산초당의 사색의 길이 여유로운 여행을 만들어 줍니다.`;
+        },
+        spots: [
+          { name: '가우도 & 출렁다리', category: '바다·해변', desc: '강진만 한가운데 자리한 섬을 잇는 해상 보도교와 해안 생태탐방로' },
+          { name: '다산초당 & 백련사', category: '산·숲 힐링', desc: '정약용 선생이 거닐던 차나무 숲길과 강진만이 내려다보이는 고찰' },
+          { name: '강진 병영성 & 한골목', category: '미식·로컬맛집', desc: '전라병영성의 옛 돌담길과 정갈한 남도 한정식 미식 체험' }
+        ],
+        costNote: '1박 2일 기준 1인 약 20~32만 원 내외 예상',
+        policy: {
+          status: 'check',
+          statusLabel: '세부 조건 확인 필요',
+          title: '강진 누구나 반값 여행 지원 사업 (지역사랑상품권 환급)',
+          benefit: '강진군 내 숙박·식당·체험 이용 금액의 50%를 모바일 강진사랑상품권으로 환급 (개인 최대 10만 원 / 팀 최대 20만 원 한도)',
+          period: '예산 소진 시까지 (여행 전 사전 신청 필수)',
+          org: '강진군청 축제마케팅추진단',
+          condition: '강진군 외 타 지역 거주자가 여행 출발 전 공식 홈페이지에서 사전 신청 후, 관내 소비 영수증을 정산해야 합니다.',
+          officialUrl: 'https://www.gangjin.go.kr'
+        }
+      },
+      {
+        id: 'yeosu',
+        regionCode: '전남',
+        areaCode: '38',
+        keyword: '여수',
+        name: '전남 여수시',
+        subtitle: '다도해의 붉은 동백과 낭만 밤바다, 섬 트레킹이 어우러진 해양 관광도시',
+        tags: ['바다·해변', '미식·로컬맛집', '걷기·트레킹', '축제·행사'],
+        transportFriendly: ['대중교통', '자가용', '상관없음'],
+        budgetLevel: 'mid',
+        kidFriendly: true,
+        petFriendly: true,
+        illustrationTheme: 'bay',
+        photoUrl: '',
+        matchReasonTemplate: (prefs) => `KTX로 역까지 한 번에 닿을 수 있어 이동이 편하며, 오동도의 해안 숲길과 돌산대교 야경, 신선한 남해 해산물 미식이 ${prefs.companion} 여행의 만족도를 높여줍니다.`,
+        spots: [
+          { name: '오동도 & 해상케이블카', category: '바다·해변', desc: '동백나무 군락지 산책로와 다도해 풍경을 내려다보는 해상 케이블카' },
+          { name: '향일암', category: '산·숲 힐링', desc: '기암절벽 사이로 남해 일출과 수평선이 펼쳐지는 해안 사찰' },
+          { name: '여수 낭만포차 & 수산물특화시장', category: '미식·로컬맛집', desc: '여수 밤바다를 배경으로 즐기는 지역 해산물 요리' }
+        ],
+        costNote: '1박 2일 기준 1인 약 23~36만 원 내외 예상',
+        policy: {
+          status: 'check',
+          statusLabel: '세부 조건 확인 필요',
+          title: '여수 투어패스 및 남해안 섬 여행 연계 할인',
+          benefit: '주요 유료 관광시설 및 해양 레저·카페 제휴처 통합 할인 패스 제공',
+          period: '상시 운영',
+          org: '여수시청 관광과 · 전남관광재단',
+          condition: '사전 온라인 예매 시 패키지 할인이 적용되며 시설별 이용 조건은 공식 안내를 확인하세요.',
+          officialUrl: 'https://www.yeosu.go.kr/tour'
+        }
+      },
+      {
+        id: 'gyeongju',
+        regionCode: '경북',
+        areaCode: '35',
+        keyword: '경주',
+        name: '경북 경주시',
+        subtitle: '천년 고도의 능선과 황리단길 골목 감성이 공존하는 대중교통 친화 여행지',
+        tags: ['역사·문화', '미식·로컬맛집', '전통시장·골목', '걷기·트레킹', '축제·행사'],
+        transportFriendly: ['대중교통', '자가용', '상관없음'],
+        budgetLevel: 'all',
+        kidFriendly: true,
+        petFriendly: false,
+        illustrationTheme: 'heritage',
+        photoUrl: '',
+        matchReasonTemplate: (prefs) => {
+          const transportNote = prefs.transport === '대중교통' ? 'KTX 경주역과 시내버스 접근성이 뛰어나 대중교통 여행자에게 특히 편리하며, ' : '';
+          return `${transportNote}도보로 이동 가능한 거리 안에 고분군, 한옥 골목, 전통시장, 야경 명소가 밀집해 있어 ${prefs.companion} 함께 알찬 일정을 보내기 좋습니다.`;
+        },
+        spots: [
+          { name: '대릉원 & 황리단길', category: '역사·문화', desc: '신라 왕릉의 고즈넉한 곡선과 한옥 카페·소품숍이 어우러진 산책 코스' },
+          { name: '동궁과 월지 (안압지)', category: '역사·야경', desc: '밤이 되면 연못 위에 비치는 신라 왕궁의 화려한 야경 명소' },
+          { name: '경주 중앙시장 야시장', category: '전통시장·골목', desc: '다양한 로컬 주전부리와 정겨운 시장 분위기를 즐길 수 있는 명소' }
+        ],
+        costNote: '1박 2일 기준 1인 약 22~38만 원 내외 예상',
+        policy: {
+          status: 'check',
+          statusLabel: '세부 조건 확인 필요',
+          title: '경주 투어패스 및 신라왕경 핵심유적 통합권 할인',
+          benefit: '동궁과 월지, 대릉원, 첨성대 등 주요 유적지 통합 관람 할인 및 제휴 카페·체험 시설 무료/할인 혜택',
+          period: '연중 상시 운영',
+          org: '경주시청 · 경북문화관광공사',
+          condition: '온라인 사전 구매 시 할인율이 적용되며, 대상별 추가 감면 조건은 현장 매표소 기준을 따릅니다.',
+          officialUrl: 'https://www.gyeongju.go.kr/tour'
+        }
+      },
+      {
+        id: 'andong',
+        regionCode: '경북',
+        areaCode: '35',
+        keyword: '안동',
+        name: '경북 안동시',
+        subtitle: '하회마을의 고택 정취와 월영교 야경이 어우러진 전통문화 소도시',
+        tags: ['조용한 소도시', '역사·문화', '전통시장·골목', '미식·로컬맛집', '축제·행사'],
+        transportFriendly: ['대중교통', '자가용', '상관없음'],
+        budgetLevel: 'low-mid',
+        kidFriendly: true,
+        petFriendly: false,
+        illustrationTheme: 'heritage',
+        photoUrl: '',
+        matchReasonTemplate: (prefs) => `중앙선 KTX로 접근이 한층 편리해진 한국 정신문화의 수도로, 고즈넉한 한옥 고택 산책과 전통시장 미식을 여유롭게 즐기기에 좋습니다.`,
+        spots: [
+          { name: '안동 하회마을 & 부용대', category: '역사·문화', desc: '낙동강이 휘감아 도는 유네스코 세계유산 전통 마을과 절벽 전망대' },
+          { name: '월영교', category: '걷기·트레킹', desc: '잔잔한 호수 위를 가로지르는 국내 최장 목책 인도교 야경 산책' },
+          { name: '안동 구시장 찜닭골목', category: '전통시장·골목', desc: '원조 안동찜닭과 맘모스제과 등 정겨운 골목 미식 투어' }
+        ],
+        costNote: '1박 2일 기준 1인 약 18~29만 원 내외 예상',
+        policy: {
+          status: 'eligible',
+          statusLabel: '조건 부합 가능성 높음',
+          title: '안동시 디지털 관광주민증 및 관광택시 지원 혜택',
+          benefit: '하회마을·도산서원 등 주요 문화유적 입장료 할인 및 소규모 관광객 대상 관광택시 이용료 지원',
+          period: '상시 운영',
+          org: '한국관광공사 · 안동시청 관광정책과',
+          condition: '안동시 외 타 지역 거주자 대상 디지털 관광주민증 발급 시 현장 즉시 할인이 적용됩니다.',
+          officialUrl: 'https://korean.visitkorea.or.kr'
+        }
+      },
+      {
+        id: 'danyang',
+        regionCode: '충북',
+        areaCode: '33',
+        keyword: '단양',
+        name: '충북 단양군',
+        subtitle: '남한강 절벽 위 잔도길과 전통시장이 어우러진 힐링·트레킹 명소',
+        tags: ['산·숲 힐링', '걷기·트레킹', '미식·로컬맛집', '전통시장·골목', '온천·휴식'],
+        transportFriendly: ['대중교통', '자가용', '상관없음'],
+        budgetLevel: 'low-mid',
+        kidFriendly: true,
+        petFriendly: true,
+        illustrationTheme: 'mountain',
+        photoUrl: '',
+        matchReasonTemplate: (prefs) => `중앙선 KTX로 접근이 편리하면서도 웅장한 석회암 절벽과 남한강 물길을 따라 걷는 트레킹, 그리고 활기찬 구경시장 먹거리를 동시에 즐길 수 있는 최적의 여행지입니다.`,
+        spots: [
+          { name: '단양강 잔도 & 만천하스카이워크', category: '걷기·트레킹', desc: '남한강 암벽을 따라 설치된 1.2km 수변 데크길과 전망대' },
+          { name: '도담삼봉', category: '산·숲 힐링', desc: '남한강 한가운데 솟아오른 세 봉우리의 단양 대표 절경' },
+          { name: '단양 구경시장', category: '전통시장·골목', desc: '단양 마늘을 활용한 마늘만두, 마늘순대 등 특색 있는 먹거리 골목' }
+        ],
+        costNote: '1박 2일 기준 1인 약 17~29만 원 내외 예상',
+        policy: {
+          status: 'eligible',
+          statusLabel: '조건 부합 가능성 높음',
+          title: '단양군 디지털 관광주민증 혜택 안내',
+          benefit: '만천하스카이워크, 다누리아쿠아리움, 고수동굴 등 주요 관광시설 입장료 할인 및 지역 특산품점 우대',
+          period: '상시 운영',
+          org: '한국관광공사 · 단양군청',
+          condition: '단양군 외 타 지역 거주자 대상. 디지털 관광주민증 모바일 발급 후 매표소 인증 시 적용됩니다.',
+          officialUrl: 'https://korean.visitkorea.or.kr'
+        }
+      },
+      {
+        id: 'jecheon',
+        regionCode: '충북',
+        areaCode: '33',
+        keyword: '제천',
+        name: '충북 제천시',
+        subtitle: '청풍호반의 잔잔한 물결과 한방 치유, 온천 휴식이 있는 내륙 힐링 도시',
+        tags: ['산·숲 힐링', '온천·휴식', '조용한 소도시', '걷기·트레킹'],
+        transportFriendly: ['자가용', '대중교통', '상관없음'],
+        budgetLevel: 'mid',
+        kidFriendly: true,
+        petFriendly: true,
+        illustrationTheme: 'mountain',
+        photoUrl: '',
+        matchReasonTemplate: (prefs) => `청풍호의 고요한 호수 풍경과 숲속 온천·스파 휴식을 함께 누릴 수 있어 재충전을 원하는 ${prefs.companion} 여행에 잘 맞습니다.`,
+        spots: [
+          { name: '청풍호반 케이블카 & 비봉산', category: '산·숲 힐링', desc: '내륙의 바다라 불리는 청풍호와 다도해 같은 산봉우리 조망' },
+          { name: '의림지 & 솔밭공원', category: '걷기·트레킹', desc: '천년 역사의 고즈넉한 저수지와 수백 년 된 노송 숲길 산책' },
+          { name: '제천 한방엑스포공원', category: '온천·휴식', desc: '족욕 체험과 한방 치유 프로그램을 경험할 수 있는 휴식 공간' }
+        ],
+        costNote: '1박 2일 기준 1인 약 20~34만 원 내외 예상',
+        policy: {
+          status: 'eligible',
+          statusLabel: '조건 부합 가능성 높음',
+          title: '제천시 디지털 관광주민증 및 시티투어 우대 혜택',
+          benefit: '청풍호반 케이블카, 의림지 역사박물관 등 주요 관광시설 이용료 할인 및 제휴 숙소·식당 우대',
+          period: '상시 운영',
+          org: '한국관광공사 · 제천시청 관광과',
+          condition: '제천시 외 타 지역 거주자 대상 디지털 관광주민증 제시 시 혜택이 적용됩니다.',
+          officialUrl: 'https://korean.visitkorea.or.kr'
+        }
+      },
+      {
+        id: 'gongju',
+        regionCode: '충남',
+        areaCode: '34',
+        keyword: '공주',
+        name: '충남 공주시',
+        subtitle: '백제 왕도의 고즈넉한 산성과 원도심 골목 카페가 어우러진 감성 소도시',
+        tags: ['조용한 소도시', '역사·문화', '전통시장·골목', '걷기·트레킹', '축제·행사'],
+        transportFriendly: ['대중교통', '자가용', '상관없음'],
+        budgetLevel: 'low-mid',
+        kidFriendly: true,
+        petFriendly: true,
+        illustrationTheme: 'heritage',
+        photoUrl: '',
+        matchReasonTemplate: (prefs) => `수도권과 충청권에서 부담 없이 다녀올 수 있는 백제 역사 소도시로, 공산성 성곽길 산책과 제민천 골목 카페 투어가 아늑한 분위기를 선사합니다.`,
+        spots: [
+          { name: '공산성 성곽길', category: '역사·문화', desc: '금강을 내려다보며 걷는 유네스코 세계유산 백제 왕성 산책로' },
+          { name: '제민천 골목길', category: '전통시장·골목', desc: '작은 독립서점과 개성 있는 로컬 카페가 모인 감성 골목' },
+          { name: '무령왕릉과 왕릉원', category: '역사·문화', desc: '백제 왕실의 역사를 만나는 전시관과 고분군 산책' }
+        ],
+        costNote: '1박 2일 기준 1인 약 16~25만 원 내외 예상',
+        policy: {
+          status: 'eligible',
+          statusLabel: '조건 부합 가능성 높음',
+          title: '공주시 디지털 관광주민증 및 백제유적 할인 안내',
+          benefit: '공산성·무령왕릉과 왕릉원·석장리박물관 입장료 50% 할인 및 제민천 제휴 카페·공방 할인',
+          period: '상시 운영',
+          org: '한국관광공사 · 공주시청 문화관광과',
+          condition: '공주시 외 타 지역 거주자 대상 디지털 관광주민증 발급 후 현장 인증 시 적용됩니다.',
+          officialUrl: 'https://korean.visitkorea.or.kr'
+        }
+      },
+      {
+        id: 'taean',
+        regionCode: '충남',
+        areaCode: '34',
+        keyword: '태안',
+        name: '충남 태안군',
+        subtitle: '서해의 붉은 낙조와 해변 솔숲, 반려동물 친화 해변이 펼쳐진 휴양지',
+        tags: ['바다·해변', '산·숲 힐링', '걷기·트레킹', '미식·로컬맛집'],
+        transportFriendly: ['자가용', '상관없음'],
+        budgetLevel: 'mid',
+        kidFriendly: true,
+        petFriendly: true,
+        illustrationTheme: 'bay',
+        photoUrl: '',
+        matchReasonTemplate: (prefs) => {
+          const petMsg = prefs.withPets ? '반려동물 동반 여행지로 특화된 해변과 수목원 인프라가 뛰어나며, ' : '';
+          return `${petMsg}서해안의 잔잔한 파도와 붉은 노을, 해송 숲길을 따라 여유로운 해변 휴식을 즐기기에 최적인 곳입니다.`;
+        },
+        spots: [
+          { name: '꽃지해수욕장 & 할미할아비바위', category: '바다·해변', desc: '서해 3대 낙조 명소로 손꼽히는 백사장과 바위 풍경' },
+          { name: '천리포수목원', category: '산·숲 힐링', desc: '바다와 맞닿은 국내 최초의 사립 수목원으로 사계절 꽃과 숲이 어우러진 곳' },
+          { name: '태안 해변길 (솔모랫길)', category: '걷기·트레킹', desc: '울창한 소나무 숲과 갯벌·해변을 번갈아 걷는 평탄한 트레킹 코스' }
+        ],
+        costNote: '1박 2일 기준 1인 약 19~30만 원 내외 예상',
+        policy: {
+          status: 'eligible',
+          statusLabel: '조건 부합 가능성 높음',
+          title: '태안군 디지털 관광주민증 및 수목원·체험 할인',
+          benefit: '천리포수목원·안면도 쥬라기박물관 등 주요 관광시설 입장료 할인 및 제휴 숙박·카페 우대',
+          period: '상시 운영',
+          org: '한국관광공사 · 태안군청 관광진흥과',
+          condition: '태안군 외 타 지역 거주자 대상 디지털 관광주민증 제시 시 할인 적용됩니다.',
+          officialUrl: 'https://korean.visitkorea.or.kr'
+        }
+      },
+      {
+        id: 'jeonju',
+        regionCode: '전북',
+        areaCode: '37',
+        keyword: '전주',
+        name: '전북 전주시',
+        subtitle: '고풍스러운 한옥마을 골목과 풍성한 남도 미식이 살아있는 문화 여행지',
+        tags: ['역사·문화', '미식·로컬맛집', '전통시장·골목', '체험·공방'],
+        transportFriendly: ['대중교통', '자가용', '상관없음'],
+        budgetLevel: 'low-mid',
+        kidFriendly: true,
+        petFriendly: false,
+        illustrationTheme: 'heritage',
+        photoUrl: '',
+        matchReasonTemplate: (prefs) => `KTX 전주역에서 한옥마을까지 이동이 간편하며, 한옥 골목 산책과 전통 공방 체험, 남부시장 먹거리까지 도보로 모두 즐길 수 있습니다.`,
+        spots: [
+          { name: '전주 한옥마을 & 경기전', category: '역사·문화', desc: '700여 채의 한옥과 대나무 숲길이 어우러진 대한민국 대표 전통마을' },
+          { name: '전주 남부시장 & 청년몰', category: '전통시장·골목', desc: '콩나물국밥, 피순대 등 로컬 미식과 개성 있는 청년 상점이 모인 시장' },
+          { name: '자만벽화마을 & 오목대', category: '걷기·트레킹', desc: '한옥마을 지붕의 곡선을 한눈에 내려다보는 언덕 산책로' }
+        ],
+        costNote: '1박 2일 기준 1인 약 18~29만 원 내외 예상',
+        policy: {
+          status: 'check',
+          statusLabel: '세부 조건 확인 필요',
+          title: '전북투어패스 및 전주 한옥마을 체험 할인 안내',
+          benefit: '경기전 및 주요 박물관·미술관 통합 입장, 한복·한지 공예 체험 및 제휴 카페 할인',
+          period: '상시 운영',
+          org: '전북특별자치도문화관광재단 · 전주시청',
+          condition: '온라인 패스권 사전 구매 시 연계 시설 무료/할인 혜택이 제공됩니다.',
+          officialUrl: 'https://tour.jeonju.go.kr'
+        }
+      },
+      {
+        id: 'muju',
+        regionCode: '전북',
+        areaCode: '37',
+        keyword: '무주',
+        name: '전북 무주군',
+        subtitle: '덕유산의 웅장한 능선과 반딧불이 청정 자연이 숨 쉬는 산골 휴양지',
+        tags: ['산·숲 힐링', '조용한 소도시', '걷기·트레킹', '온천·휴식'],
+        transportFriendly: ['자가용', '상관없음'],
+        budgetLevel: 'low-mid',
+        kidFriendly: true,
+        petFriendly: true,
+        illustrationTheme: 'mountain',
+        photoUrl: '',
+        matchReasonTemplate: (prefs) => `사계절 수려한 덕유산 국립공원의 숲길과 맑은 계곡, 고요한 소도시 분위기를 찾는 ${prefs.companion} 여행에 잘 어울립니다.`,
+        spots: [
+          { name: '덕유산 국립공원 (곤도라·향적봉)', category: '산·숲 힐링', desc: '곤도라를 타고 해발 1,520m 설천봉까지 편하게 올라 만나는 백두대간 절경' },
+          { name: '무주 반디랜드', category: '체험·공방', desc: '청정 자연의 상징인 반딧불이 생태관과 천문과학관 체험' },
+          { name: '머루와인동굴', category: '온천·휴식', desc: '시원한 산중 동굴 속에서 즐기는 무주 특산 머루와인 시음 및 족욕 체험' }
+        ],
+        costNote: '1박 2일 기준 1인 약 18~28만 원 내외 예상',
+        policy: {
+          status: 'eligible',
+          statusLabel: '조건 부합 가능성 높음',
+          title: '무주군 디지털 관광주민증 및 주요 관광지 할인',
+          benefit: '반디랜드·머루와인동굴·태권도원 모노레일 입장료 할인 및 제휴 숙박·식당 우대',
+          period: '상시 운영',
+          org: '한국관광공사 · 무주군청 관광진흥과',
+          condition: '무주군 외 타 지역 거주자 대상 디지털 관광주민증 발급 시 현장 즉시 할인이 적용됩니다.',
+          officialUrl: 'https://korean.visitkorea.or.kr'
+        }
+      },
+      {
+        id: 'hadong',
+        regionCode: '경남',
+        areaCode: '36',
+        keyword: '하동',
+        name: '경남 하동군',
+        subtitle: '섬진강 물길과 지리산 야생 차밭이 펼쳐진 느림의 미학 소도시',
+        tags: ['조용한 소도시', '산·숲 힐링', '걷기·트레킹', '미식·로컬맛집'],
+        transportFriendly: ['자가용', '대중교통', '상관없음'],
+        budgetLevel: 'low-mid',
+        kidFriendly: true,
+        petFriendly: true,
+        illustrationTheme: 'mountain',
+        photoUrl: '',
+        matchReasonTemplate: (prefs) => `초록빛 야생 차밭과 유유히 흐르는 섬진강 물길을 따라 복잡한 일상에서 벗어나 온전한 쉼을 누릴 수 있는 힐링 소도시입니다.`,
+        spots: [
+          { name: '쌍계사 & 십리벚꽃길·차밭', category: '산·숲 힐링', desc: '지리산 계곡물 소리와 천년 고찰, 푸른 녹차밭이 어우러진 사색 산책로' },
+          { name: '최참판댁 & 평사리 들판', category: '역사·문화', desc: '소설 토지의 배경이 된 전통 한옥 마을과 탁 트인 들판 전망' },
+          { name: '섬진강 재첩거리 & 화개장터', category: '미식·로컬맛집', desc: '시원한 섬진강 재첩국과 참게장 등 지역 향토 음식을 맛보는 코스' }
+        ],
+        costNote: '1박 2일 기준 1인 약 18~28만 원 내외 예상',
+        policy: {
+          status: 'eligible',
+          statusLabel: '조건 부합 가능성 높음',
+          title: '하동군 디지털 관광주민증 혜택 안내',
+          benefit: '최참판댁·하동플라이웨이 케이블카·삼성궁 등 주요 관광시설 입장료 할인 및 다원·카페 우대',
+          period: '상시 운영',
+          org: '한국관광공사 · 하동군청 관광진흥과',
+          condition: '하동군 외 타 지역 거주자 대상 디지털 관광주민증 제시 시 할인이 적용됩니다.',
+          officialUrl: 'https://korean.visitkorea.or.kr'
+        }
+      },
+      {
+        id: 'tongyeong',
+        regionCode: '경남',
+        areaCode: '36',
+        keyword: '통영',
+        name: '경남 통영시',
+        subtitle: '한려수도의 다도해 절경과 동피랑 벽화골목, 해산물 미식이 빛나는 항구도시',
+        tags: ['바다·해변', '미식·로컬맛집', '전통시장·골목', '체험·공방'],
+        transportFriendly: ['대중교통', '자가용', '상관없음'],
+        budgetLevel: 'mid',
+        kidFriendly: true,
+        petFriendly: true,
+        illustrationTheme: 'bay',
+        photoUrl: '',
+        matchReasonTemplate: (prefs) => `동양의 나폴리라 불리는 다도해의 쪽빛 바다와 활기찬 중앙시장, 아기자기한 언덕 골목이 어우러져 볼거리와 먹거리가 풍부합니다.`,
+        spots: [
+          { name: '미륵산 케이블카 & 스카이라인 루지', category: '바다·해변', desc: '한려수도 크고 작은 섬들의 비경을 한눈에 담는 전망과 액티비티' },
+          { name: '동피랑 벽화마을 & 강구안', category: '전통시장·골목', desc: '통영항이 내려다보이는 알록달록한 골목길과 거북선 전시관 산책' },
+          { name: '통영 중앙활어시장', category: '미식·로컬맛집', desc: '충무김밥, 꿀빵, 신선한 남해 활어회를 즐길 수 있는 전통시장' }
+        ],
+        costNote: '1박 2일 기준 1인 약 21~33만 원 내외 예상',
+        policy: {
+          status: 'check',
+          statusLabel: '세부 조건 확인 필요',
+          title: '통영 섬 여행 여객선 운임 할인 및 투어패스',
+          benefit: '연화도·욕지도·한산도 등 통영 섬 방문객 대상 여객선 운임 할인 프로모션(기간 한정) 및 시내 관광패스',
+          period: '시즌별 운영 (공식 홈페이지 공고 확인)',
+          org: '통영시청 관광과 · 경남관광재단',
+          condition: '섬 여행 운임 지원은 사전 온라인 예약 및 예산 소진 여부에 따라 달라집니다.',
+          officialUrl: 'https://www.tongyeong.go.kr/tour'
+        }
+      },
+      {
+        id: 'jeju',
+        regionCode: '제주',
+        areaCode: '39',
+        keyword: '제주',
+        name: '제주특별자치도 (서귀포·제주시)',
+        subtitle: '에메랄드빛 해안 올레길과 오름, 사계절 자연 풍광이 압도적인 대표 휴양지',
+        tags: ['바다·해변', '산·숲 힐링', '걷기·트레킹', '미식·로컬맛집', '온천·휴식'],
+        transportFriendly: ['자가용', '대중교통', '상관없음'],
+        budgetLevel: 'mid',
+        kidFriendly: true,
+        petFriendly: true,
+        illustrationTheme: 'bay',
+        photoUrl: '',
+        matchReasonTemplate: (prefs) => `바다와 숲, 오름 트레킹부터 감성 카페와 로컬 미식까지 어떤 취향이든 가장 폭넓게 만족시켜 주는 대표 자연 여행지입니다.`,
+        spots: [
+          { name: '성산일출봉 & 섭지코지', category: '바다·해변', desc: '유네스코 세계자연유산 분화구와 푸른 해안 절벽이 어우러진 명소' },
+          { name: '사려니숲길 & 비자림', category: '산·숲 힐링', desc: '삼나무와 비자나무가 뿜어내는 피톤치드 가득한 평탄한 숲길 산책' },
+          { name: '제주 동문재래시장 & 올레시장', category: '전통시장·골목', desc: '흑돼지, 감귤 디저트, 해산물 등 제주 로컬 먹거리가 모인 전통시장' }
+        ],
+        costNote: '1박 2일 기준 1인 약 28~45만 원 내외 예상 (항공권 시세에 따라 변동)',
+        policy: {
+          status: 'check',
+          statusLabel: '세부 조건 확인 필요',
+          title: '탐나는전(지역화폐) 가맹점 할인 및 공영관광지 연계 혜택',
+          benefit: '제주 지역화폐 탐나는전 결제 시 가맹점 할인/적립 및 디지털 관광증(나우다) 연계 체험 혜택',
+          period: '상시 운영',
+          org: '제주특별자치도 · 제주관광공사',
+          condition: '탐나는전 앱 가입 및 현장 QR 결제 시 제휴 관광지·소상공인 매장에서 혜택이 적용됩니다.',
+          officialUrl: 'https://www.visitjeju.net'
+        }
+      },
+      {
+        id: 'busan',
+        regionCode: '부산',
+        areaCode: '6',
+        keyword: '부산',
+        name: '부산광역시',
+        subtitle: '도심 속 해수욕장과 해안 열차, 국제시장 먹거리가 어우러진 해양 대도시',
+        tags: ['바다·해변', '미식·로컬맛집', '전통시장·골목', '축제·행사'],
+        transportFriendly: ['대중교통', '자가용', '상관없음'],
+        budgetLevel: 'mid',
+        kidFriendly: true,
+        petFriendly: true,
+        illustrationTheme: 'bay',
+        photoUrl: '',
+        matchReasonTemplate: (prefs) => `KTX와 도시철도만으로 해운대·광안리 바다부터 감천문화마을, 남포동 시장까지 완벽하게 이동할 수 있는 대중교통 최적의 해양 도시입니다.`,
+        spots: [
+          { name: '해운대 블루라인파크 & 미포해변', category: '바다·해변', desc: '동해남부선 옛 철길을 따라 해안 절경을 감상하는 해변열차·스카이캡슐' },
+          { name: '감천문화마을 & 흰여울문화마을', category: '전통시장·골목', desc: '바다를 마주한 절벽 위 골목길과 아기자기한 예술 공방 산책' },
+          { name: '국제시장 & 부평깡통시장', category: '미식·로컬맛집', desc: '씨앗호떡, 비빔당면, 돼지국밥 등 부산 대표 길거리·로컬 음식' }
+        ],
+        costNote: '1박 2일 기준 1인 약 23~38만 원 내외 예상',
+        policy: {
+          status: 'check',
+          statusLabel: '세부 조건 확인 필요',
+          title: '비짓부산패스(VISIT BUSAN PASS) 및 부산시티투어 할인',
+          benefit: '해운대 블루라인파크, 엑스더스카이, 송도해상케이블카 등 주요 유료 명소 통합 할인',
+          period: '상시 운영',
+          org: '부산광역시 · 부산관광공사',
+          condition: '패스권 권종 및 이용 대상(내·외국인 구분 패스 확인 필요)에 따라 적용 범위가 다릅니다.',
+          officialUrl: 'https://www.visitbusan.net'
+        }
+      },
+      {
+        id: 'seoul',
+        regionCode: '서울',
+        areaCode: '1',
+        keyword: '서울',
+        name: '서울특별시 (종로·북촌·성수)',
+        subtitle: '고궁의 고즈넉한 돌담길과 트렌디한 골목 문화, 야경이 공존하는 수도 여행',
+        tags: ['역사·문화', '전통시장·골목', '미식·로컬맛집', '축제·행사', '체험·공방'],
+        transportFriendly: ['대중교통', '상관없음'],
+        budgetLevel: 'all',
+        kidFriendly: true,
+        petFriendly: false,
+        illustrationTheme: 'heritage',
+        photoUrl: '',
+        matchReasonTemplate: (prefs) => `차량 없이 지하철과 도보만으로 고궁 산책, 광장시장 먹거리, 남산 야경, 전시 관람까지 가장 다채로운 문화 경험을 누릴 수 있습니다.`,
+        spots: [
+          { name: '경복궁 & 북촌·서촌 한옥골목', category: '역사·문화', desc: '조선 왕실의 고궁과 전통 한옥, 작은 갤러리가 어우러진 도심 산책' },
+          { name: '광장시장 & 을지로 노포골목', category: '전통시장·골목', desc: '빈대떡, 육회, 마약김밥 등 활기찬 전통시장 미식 탐방' },
+          { name: '남산서울타워 & 청계천 야경', category: '걷기·트레킹', desc: '서울 도심의 화려한 스카이라인과 물길을 따라 걷는 저녁 산책' }
+        ],
+        costNote: '1박 2일 기준 1인 약 20~38만 원 내외 예상',
+        policy: {
+          status: 'check',
+          statusLabel: '세부 조건 확인 필요',
+          title: '서울 고궁·종묘 통합관람권 및 문화행사 안내',
+          benefit: '4대 고궁 및 종묘 통합관람권 할인, 한복 착용 시 고궁 무료 입장 및 야간 개장 행사',
+          period: '상시 및 계절별 야간개장 기간',
+          org: '국가유산청 궁능유적본부 · 서울관광재단',
+          condition: '고궁 야간 관람은 사전 온라인 예매가 필요하며, 한복 무료 입장은 현장 기준을 따릅니다.',
+          officialUrl: 'https://korean.visitseoul.net'
+        }
+      },
+      {
+        id: 'incheon',
+        regionCode: '인천',
+        areaCode: '2',
+        keyword: '강화',
+        name: '인천광역시 (강화도·개항장)',
+        subtitle: '서해의 섬 정취와 근대 개항장 골목이 가까운 수도권 대표 바다·역사 여행지',
+        tags: ['바다·해변', '역사·문화', '전통시장·골목', '체험·공방'],
+        transportFriendly: ['대중교통', '자가용', '상관없음'],
+        budgetLevel: 'low-mid',
+        kidFriendly: true,
+        petFriendly: true,
+        illustrationTheme: 'bay',
+        photoUrl: '',
+        matchReasonTemplate: (prefs) => `수도권에서 당일치기나 1박 2일로 부담 없이 떠나 바다 풍경과 근대 역사 골목, 섬 산책을 한 번에 즐길 수 있는 알찬 코스입니다.`,
+        spots: [
+          { name: '인천 개항장 거리 & 차이나타운', category: '전통시장·골목', desc: '근대 건축물 박물관과 먹거리 골목이 모인 도보 여행 명소' },
+          { name: '강화도 전등사 & 동막해변', category: '바다·해변', desc: '천년 고찰의 숲길과 서해 갯벌·낙조를 함께 만나는 섬 여행지' },
+          { name: '월미도 & 송도 센트럴파크', category: '걷기·트레킹', desc: '바다 열차와 수상 택시, 야경 산책을 즐길 수 있는 해안 공원' }
+        ],
+        costNote: '1박 2일 기준 1인 약 16~27만 원 내외 예상',
+        policy: {
+          status: 'eligible',
+          statusLabel: '조건 부합 가능성 높음',
+          title: '강화군 디지털 관광주민증 및 인천 시티투어 할인',
+          benefit: '강화 루지, 소창체험관 등 주요 시설 할인 및 인천시티투어 순환버스 연계 우대',
+          period: '상시 운영',
+          org: '한국관광공사 · 인천관광공사 · 강화군청',
+          condition: '강화군 방문 시 디지털 관광주민증을 발급받으면 제휴 관광지 및 카페에서 즉시 할인됩니다.',
+          officialUrl: 'https://itour.incheon.go.kr'
+        }
+      },
+      {
+        id: 'gapyeong',
+        regionCode: '경기',
+        areaCode: '31',
+        keyword: '가평',
+        name: '경기도 (가평·양평)',
+        subtitle: '북한강 물길과 잣나무 숲길, 정원 산책이 가까운 수도권 대표 힐링 권역',
+        tags: ['산·숲 힐링', '걷기·트레킹', '온천·휴식', '축제·행사'],
+        transportFriendly: ['대중교통', '자가용', '상관없음'],
+        budgetLevel: 'low-mid',
+        kidFriendly: true,
+        petFriendly: true,
+        illustrationTheme: 'mountain',
+        photoUrl: '',
+        matchReasonTemplate: (prefs) => `경춘선·중앙선 전철과 ITX로도 쉽게 닿을 수 있는 푸른 숲과 강변 휴양지로, 짧은 일정에도 깊은 자연 치유를 경험할 수 있습니다.`,
+        spots: [
+          { name: '아침고요수목원', category: '산·숲 힐링', desc: '축령산 자락 아래 계절별 야생화와 한국식 정원이 펼쳐진 대표 수목원' },
+          { name: '자라섬 & 남이섬 권역', category: '걷기·트레킹', desc: '북한강 한가운데 메타세쿼이아 길과 사계절 꽃정원을 걷는 섬 산책' },
+          { name: '양평 두물머리', category: '산·숲 힐링', desc: '남한강과 북한강이 만나는 물안개 풍경과 400년 느티나무 명소' }
+        ],
+        costNote: '1박 2일 기준 1인 약 18~30만 원 내외 예상',
+        policy: {
+          status: 'check',
+          statusLabel: '세부 조건 확인 필요',
+          title: '가평 관광지 순환버스 및 경기투어패스 할인',
+          benefit: '가평 주요 관광지 순환버스 1일권 및 수목원·정원 연계 입장 할인',
+          period: '상시 운영',
+          org: '가평군청 관광과 · 경기관광공사',
+          condition: '순환버스 탑승권 소지 시 당일 재탑승 및 제휴 관광지 입장료 할인이 제공됩니다.',
+          officialUrl: 'https://www.gptour.go.kr'
+        }
+      },
+      {
+        id: 'daejeon',
+        regionCode: '대전',
+        areaCode: '3',
+        keyword: '대전',
+        name: '대전광역시',
+        subtitle: '성심당 빵지순례와 도심 속 온천, 계족산 황톳길 맨발 산책이 있는 과학·힐링 도시',
+        tags: ['미식·로컬맛집', '온천·휴식', '걷기·트레킹', '전통시장·골목'],
+        transportFriendly: ['대중교통', '자가용', '상관없음'],
+        budgetLevel: 'low-mid',
+        kidFriendly: true,
+        petFriendly: false,
+        illustrationTheme: 'mountain',
+        photoUrl: '',
+        matchReasonTemplate: (prefs) => `전국 어디서든 KTX로 1~2시간이면 도착하는 교통의 중심으로, 가성비 높은 로컬 미식과 온천 족욕, 숲길 산책을 부담 없이 즐기기 좋습니다.`,
+        spots: [
+          { name: '유성온천 족욕체험장', category: '온천·휴식', desc: '천연 온천수에 발을 담그며 피로를 푸는 도심 속 무료 야외 족욕장' },
+          { name: '계족산 황톳길 & 한밭수목원', category: '걷기·트레킹', desc: '부드러운 황톳길을 맨발로 걷는 숲길과 도심 최대 인공수목원' },
+          { name: '중앙시장 & 은행동 빵지순례 거리', category: '미식·로컬맛집', desc: '유명 베이커리와 칼국수, 두부두루치기 등 대전 대표 먹거리 탐방' }
+        ],
+        costNote: '1박 2일 기준 1인 약 15~25만 원 내외 예상',
+        policy: {
+          status: 'check',
+          statusLabel: '세부 조건 확인 필요',
+          title: '대전 투어패스 및 야간관광 특화 프로그램 안내',
+          benefit: '엑스포과학공원, 아쿠아리움, 오월드 등 주요 유료 시설 및 로컬 카페 제휴 할인',
+          period: '상시 운영',
+          org: '대전광역시 · 대전관광공사',
+          condition: '대전관광공사 공식 홈페이지에서 시즌별 할인 패스 운영 여부를 확인하세요.',
+          officialUrl: 'https://www.daejeontour.co.kr'
+        }
+      },
+      {
+        id: 'sejong',
+        regionCode: '세종',
+        areaCode: '8',
+        keyword: '세종',
+        name: '세종특별자치시',
+        subtitle: '국내 최대 국립수목원과 호수공원이 펼쳐진 여유로운 정원·건축 산책 도시',
+        tags: ['산·숲 힐링', '걷기·트레킹', '조용한 소도시'],
+        transportFriendly: ['자가용', '대중교통', '상관없음'],
+        budgetLevel: 'low-mid',
+        kidFriendly: true,
+        petFriendly: true,
+        illustrationTheme: 'mountain',
+        photoUrl: '',
+        matchReasonTemplate: (prefs) => `넓고 쾌적하게 조성된 호수공원과 사계절 온실 수목원, 금강 보행교를 따라 여유롭고 정돈된 산책 여행을 원하는 분께 추천합니다.`,
+        spots: [
+          { name: '국립세종수목원', category: '산·숲 힐링', desc: '국내 최대 규모의 사계절 전시온실과 한국전통정원을 품은 도심 수목원' },
+          { name: '세종호수공원 & 이응다리(금강보행교)', category: '걷기·트레킹', desc: '탁 트인 호수 산책로와 원형 복층 보행교의 저녁 조명 야경' },
+          { name: '베어트리파크', category: '체험·공방', desc: '비단잉어 연못과 반달곰, 수목 정원이 어우러진 가족 나들이 명소' }
+        ],
+        costNote: '1박 2일 기준 1인 약 16~26만 원 내외 예상',
+        policy: {
+          status: 'check',
+          statusLabel: '세부 조건 확인 필요',
+          title: '국립세종수목원 제휴 할인 및 세종 시티투어',
+          benefit: '다자녀 가구·국가유공자·문화누리카드 소지자 입장료 감면 및 시티투어 코스 운영',
+          period: '상시 운영',
+          org: '세종특별자치시 · 한국수목원정원관리원',
+          condition: '증빙서류 지참 시 현장 매표소에서 감면 혜택이 적용됩니다.',
+          officialUrl: 'https://www.sejong.go.kr/tour.do'
+        }
+      },
+      {
+        id: 'daegu',
+        regionCode: '대구',
+        areaCode: '4',
+        keyword: '대구',
+        name: '대구광역시',
+        subtitle: '근대문화골목과 활기찬 서문시장 야시장, 팔공산 숲길이 어우러진 미식 도시',
+        tags: ['전통시장·골목', '미식·로컬맛집', '역사·문화', '산·숲 힐링'],
+        transportFriendly: ['대중교통', '자가용', '상관없음'],
+        budgetLevel: 'low-mid',
+        kidFriendly: true,
+        petFriendly: false,
+        illustrationTheme: 'heritage',
+        photoUrl: '',
+        matchReasonTemplate: (prefs) => `KTX 동대구역에서 도심 명소까지 지하철로 빠르게 연결되며, 근대 골목 투어와 서문시장 야시장 먹거리가 알찬 여행을 완성해 줍니다.`,
+        spots: [
+          { name: '서문시장 야시장', category: '전통시장·골목', desc: '전국 최대 규모 야시장 중 하나로 다채로운 길거리 음식이 펼쳐지는 명소' },
+          { name: '대구 근대문화골목 & 김광석다시그리기길', category: '역사·문화', desc: '청라언덕, 계산성당, 옛 골목길을 따라 걷는 감성 도보 코스' },
+          { name: '팔공산 케이블카 & 동화사', category: '산·숲 힐링', desc: '수려한 암봉과 천년 고찰의 고요한 산사 분위기를 느끼는 자연 명소' }
+        ],
+        costNote: '1박 2일 기준 1인 약 17~27만 원 내외 예상',
+        policy: {
+          status: 'check',
+          statusLabel: '세부 조건 확인 필요',
+          title: '대구 시티투어 도심순환코스 및 테마투어 할인',
+          benefit: '동대구역 출발 도심순환버스 1일 자유이용권 및 제휴 관광지·음식점 할인 혜택',
+          period: '상시 운영',
+          org: '대구광역시 · 대구문화예술진흥원',
+          condition: '시티투어 탑승권 제시 시 주요 유료 전시관 및 제휴 매장에서 할인을 받을 수 있습니다.',
+          officialUrl: 'https://tour.daegu.go.kr'
+        }
+      },
+      {
+        id: 'gwangju',
+        regionCode: '광주',
+        areaCode: '5',
+        keyword: '광주',
+        name: '광주광역시',
+        subtitle: '국립아시아문화전당의 예술 감성과 양림동 근대역사마을, 남도 미식의 중심',
+        tags: ['역사·문화', '미식·로컬맛집', '전통시장·골목', '체험·공방'],
+        transportFriendly: ['대중교통', '자가용', '상관없음'],
+        budgetLevel: 'low-mid',
+        kidFriendly: true,
+        petFriendly: false,
+        illustrationTheme: 'heritage',
+        photoUrl: '',
+        matchReasonTemplate: (prefs) => `예술 전시와 근대 역사 골목, 정갈한 남도 백반과 송정역시장 먹거리까지 문화와 미식을 함께 즐기고 싶은 여행자에게 추천합니다.`,
+        spots: [
+          { name: '양림동 역사문화마을 & 펭귄마을', category: '전통시장·골목', desc: '근대 선교사 사택과 개성 있는 공예 공방, 벽화 골목이 모인 산책지' },
+          { name: '국립아시아문화전당 (ACC)', category: '역사·문화', desc: '대규모 복합문화예술공간에서 만나는 전시·공연과 도심 하늘마당' },
+          { name: '1913송정역시장', category: '미식·로컬맛집', desc: '광주송정역 바로 앞에서 만나는 레트로 감성의 먹거리 특화 시장' }
+        ],
+        costNote: '1박 2일 기준 1인 약 17~27만 원 내외 예상',
+        policy: {
+          status: 'check',
+          statusLabel: '세부 조건 확인 필요',
+          title: '광주 예술여행 패스 및 시티투어 연계 할인',
+          benefit: '주요 미술관·전시관 관람 할인 및 광주투어버스 이용 우대',
+          period: '상시 운영',
+          org: '광주광역시 · 광주관광공사',
+          condition: '광주관광 공식 포털(오매광주)에서 시즌별 투어 패스 혜택을 확인해 주세요.',
+          officialUrl: 'https://tour.gwangju.go.kr'
+        }
+      },
+      {
+        id: 'ulsan',
+        regionCode: '울산',
+        areaCode: '7',
+        keyword: '울산',
+        name: '울산광역시',
+        subtitle: '대왕암공원의 기암괴석 해안과 태화강 국가정원 십리대숲이 어우러진 생태 도시',
+        tags: ['바다·해변', '산·숲 힐링', '걷기·트레킹'],
+        transportFriendly: ['자가용', '대중교통', '상관없음'],
+        budgetLevel: 'low-mid',
+        kidFriendly: true,
+        petFriendly: true,
+        illustrationTheme: 'bay',
+        photoUrl: '',
+        matchReasonTemplate: (prefs) => `도심을 가로지르는 울창한 대나무 숲 정원과 동해의 웅장한 바위 절벽 해안을 동시에 걸을 수 있는 쾌적한 자연 여행지입니다.`,
+        spots: [
+          { name: '대왕암공원 & 출렁다리', category: '바다·해변', desc: '해송 숲길 끝에 펼쳐지는 기암괴석 해안과 바다 위 출렁다리 산책' },
+          { name: '태화강 국가정원 (십리대숲)', category: '산·숲 힐링', desc: '강변을 따라 4km 이어지는 울창한 대나무 숲과 계절 꽃정원' },
+          { name: '간절곶', category: '바다·해변', desc: '한반도 육지에서 해가 가장 먼저 뜨는 탁 트인 해안 공원' }
+        ],
+        costNote: '1박 2일 기준 1인 약 18~28만 원 내외 예상',
+        policy: {
+          status: 'check',
+          statusLabel: '세부 조건 확인 필요',
+          title: '울산 시티투어 및 고래문화특구 통합권 할인',
+          benefit: '장생포 고래박물관·생태체험관·모노레일 통합권 할인 및 시티투어 2층 버스 우대',
+          period: '상시 운영',
+          org: '울산광역시 · 울산문화관광재단',
+          condition: '주요 공원(대왕암공원·태화강 국가정원)은 무료 개방이며 체험 시설은 통합권 예매 시 할인됩니다.',
+          officialUrl: 'https://tour.ulsan.go.kr'
+        }
+      }
+    ];
+
+    // =========================================================================
+    // 3. 초기화 및 UI 제어 함수
+    // =========================================================================
+    window.onload = function () {
+      lucide.createIcons();
+      initDefaultDates();
+      renderSidoButtons();
+      updateSliderTrackFill(25);
+      loadSavedApiKey();
+    };
+
+    function loadSavedApiKey() {
+      try {
+        const saved = sessionStorage.getItem('data_go_kr_key') || '';
+        if (saved) {
+          appState.apiKey = saved;
+          updateApiKeyUI(true);
+        }
+      } catch (err) {
+        console.warn('스토리지 접근 제한:', err);
+      }
+    }
+
+    // 입력된 인증키의 Encoding / Decoding 양쪽 형태 후보를 모두 생성
+    function getServiceKeyCandidates(rawKey) {
+      const trimmed = (rawKey || '').trim();
+      if (!trimmed) return [];
+      const candidates = [];
+      if (trimmed.includes('%')) {
+        candidates.push(trimmed);
+        try {
+          const decoded = decodeURIComponent(trimmed);
+          candidates.push(encodeURIComponent(decoded));
+        } catch (e) {}
+      } else {
+        candidates.push(encodeURIComponent(trimmed));
+        candidates.push(trimmed);
+      }
+      return [...new Set(candidates)];
+    }
+
+    function saveApiKeyFromCover() {
+      const val = document.getElementById('cover-api-key-input').value.trim();
+      applyApiKey(val);
+    }
+
+    function saveApiKeyFromModal() {
+      const val = document.getElementById('modal-api-key-input').value.trim();
+      applyApiKey(val);
+      closeApiSetupModal();
+    }
+
+    function applyApiKey(rawKey) {
+      appState.apiKey = rawKey;
+      try {
+        if (rawKey) {
+          sessionStorage.setItem('data_go_kr_key', rawKey);
+        } else {
+          sessionStorage.removeItem('data_go_kr_key');
+        }
+      } catch (err) {
+        console.warn('스토리지 저장 제한:', err);
+      }
+      updateApiKeyUI(Boolean(rawKey));
+    }
+
+    function clearSavedApiKey() {
+      document.getElementById('cover-api-key-input').value = '';
+      document.getElementById('modal-api-key-input').value = '';
+      applyApiKey('');
+      closeApiSetupModal();
+    }
+
+    function updateApiKeyUI(hasKey) {
+      const dot = document.getElementById('api-status-dot');
+      const label = document.getElementById('api-status-label');
+      const coverBadge = document.getElementById('cover-key-badge');
+      const coverInput = document.getElementById('cover-api-key-input');
+      const modalInput = document.getElementById('modal-api-key-input');
+
+      if (hasKey) {
+        dot.className = 'w-2 h-2 rounded-full bg-emerald-600';
+        label.textContent = 'API 연결됨';
+        coverBadge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold';
+        coverBadge.textContent = '연결됨';
+        if (coverInput) coverInput.value = appState.apiKey;
+        if (modalInput) modalInput.value = appState.apiKey;
+      } else {
+        dot.className = 'w-2 h-2 rounded-full bg-amber-500';
+        label.textContent = 'API 키 설정';
+        coverBadge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-medium';
+        coverBadge.textContent = '기본모드';
+      }
+    }
+
+    // =========================================================================
+    // 4. 공공데이터포털 3종 API 실시간 호출 모듈 (v2 / v1 이중 자동 대응)
+    // =========================================================================
+    async function tryFetchJson(url) {
+      const res = await fetch(url);
+      if (!res.ok) return null;
+      const text = await res.text();
+      try {
+        return JSON.parse(text);
+      } catch (e) {
+        console.warn('API 비-JSON 응답(인증키 또는 엔드포인트 확인):', text.slice(0, 180));
+        return null;
+      }
+    }
+
+    async function fetchPublicApisForDestination(dest, rawKey, prefs) {
+      const enriched = JSON.parse(JSON.stringify(dest));
+      enriched.matchReasonTemplate = dest.matchReasonTemplate;
+
+      let tourSuccess = false;
+      let photoSuccess = false;
+      let policySuccess = false;
+
+      const keyCandidates = getServiceKeyCandidates(rawKey);
+      const contentTypeId = prefs.themes.includes('축제·행사') ? '15' : '12';
+      const keywordEnc = encodeURIComponent(dest.keyword);
+
+      // 1) 한국관광공사 국문 관광정보 (KorService2 우선 -> KorService1 폴백, 키워드 검색 및 지역 조회)
+      for (const encodedKey of keyCandidates) {
+        if (tourSuccess) break;
+        const tourEndpoints = [
+          `https://apis.data.go.kr/B551011/KorService2/searchKeyword2?serviceKey=${encodedKey}&numOfRows=6&pageNo=1&MobileOS=ETC&MobileApp=KoreaTravelGuide&_type=json&arrange=P&keyword=${keywordEnc}`,
+          `https://apis.data.go.kr/B551011/KorService2/areaBasedList2?serviceKey=${encodedKey}&numOfRows=6&pageNo=1&MobileOS=ETC&MobileApp=KoreaTravelGuide&_type=json&arrange=P&contentTypeId=${contentTypeId}&areaCode=${dest.areaCode}`,
+          `https://apis.data.go.kr/B551011/KorService1/searchKeyword1?serviceKey=${encodedKey}&numOfRows=6&pageNo=1&MobileOS=ETC&MobileApp=KoreaTravelGuide&_type=json&listYN=Y&arrange=P&keyword=${keywordEnc}`,
+          `https://apis.data.go.kr/B551011/KorService1/areaBasedList1?serviceKey=${encodedKey}&numOfRows=6&pageNo=1&MobileOS=ETC&MobileApp=KoreaTravelGuide&_type=json&listYN=Y&arrange=P&contentTypeId=${contentTypeId}&areaCode=${dest.areaCode}`
+        ];
+
+        for (const url of tourEndpoints) {
+          try {
+            const data = await tryFetchJson(url);
+            const items = data?.response?.body?.items?.item;
+            if (Array.isArray(items) && items.length > 0) {
+              tourSuccess = true;
+              enriched.spots = items.slice(0, 3).map(item => ({
+                name: item.title || '추천 관광지',
+                category: String(item.contenttypeid) === '15' ? '축제·행사 (실시간 API)' : '관광명소 (실시간 API)',
+                desc: item.addr1 ? `${item.addr1} 일대 추천 명소` : '한국관광공사 등록 관광지 정보'
+              }));
+              const withImg = items.find(i => i.firstimage || i.firstimage2);
+              const imgRaw = withImg?.firstimage || withImg?.firstimage2;
+              if (imgRaw) {
+                enriched.photoUrl = imgRaw.replace(/^http:\/\//i, 'https://');
+                photoSuccess = true;
+              }
+              break;
+            }
+          } catch (e) {
+            console.warn('국문 관광정보 조회 시도 중:', e);
+          }
+        }
+      }
+
+      // 2) 한국관광공사 관광사진 정보 (사진이 아직 없으면 별도 사진 API 호출)
+      if (!photoSuccess) {
+        for (const encodedKey of keyCandidates) {
+          if (photoSuccess) break;
+          const photoUrls = [
+            `https://apis.data.go.kr/B551011/PhotoGalleryService1/gallerySearchList1?serviceKey=${encodedKey}&numOfRows=3&pageNo=1&MobileOS=ETC&MobileApp=KoreaTravelGuide&_type=json&arrange=A&keyword=${keywordEnc}`
+          ];
+          for (const url of photoUrls) {
+            try {
+              const data = await tryFetchJson(url);
+              const items = data?.response?.body?.items?.item;
+              if (Array.isArray(items) && items.length > 0 && items[0].galWebImageUrl) {
+                enriched.photoUrl = items[0].galWebImageUrl.replace(/^http:\/\//i, 'https://');
+                photoSuccess = true;
+                break;
+              }
+            } catch (e) {
+              console.warn('관광사진 API 조회 시도 중:', e);
+            }
+          }
+        }
+      }
+
+      // 3) 행정안전부 대한민국 공공서비스(혜택) 정보 - 여행/관광 전용 필터링
+      for (const encodedKey of keyCandidates) {
+        if (policySuccess) break;
+        try {
+          const govUrl = `https://api.odcloud.kr/api/gov24/v3/serviceList?page=1&perPage=30&cond%5B%EC%84%9C%EB%B9%84%EC%8A%A4%EB%AA%85%3A%3ALIKE%5D=${keywordEnc}&serviceKey=${encodedKey}`;
+          const data = await tryFetchJson(govUrl);
+          const list = data?.data;
+          if (Array.isArray(list) && list.length > 0) {
+            const includeRegex = /관광|여행|숙박|투어|유적|박물관|미술관|체험마을|관광주민증|시티투어|캠핑/;
+            const excludeRegex = /교복|출산|임산부|장학|보육|어린이집|노인|어르신|장애인|농업|축산|어업|소상공인|군민안전보험|시민안전보험|청년월세|주거급여|기초생활|지역화폐|사랑상품권/;
+
+            const travelPolicy = list.find(p => {
+              const fullText = `${p['서비스명'] || ''} ${p['서비스목적요약'] || ''} ${p['지원대상'] || ''}`;
+              return includeRegex.test(fullText) && !excludeRegex.test(fullText);
+            });
+
+            if (travelPolicy && travelPolicy['서비스명']) {
+              policySuccess = true;
+              enriched.policy = {
+                status: 'check',
+                statusLabel: '정부24 API 조회됨 · 조건 확인',
+                title: travelPolicy['서비스명'],
+                benefit: travelPolicy['지원내용'] || travelPolicy['서비스목적요약'] || '상세 지원 내용은 공식 안내 페이지를 확인해 주세요.',
+                period: travelPolicy['신청기한'] || '상시 또는 공고 기간 내',
+                org: travelPolicy['소관기관명'] || dest.policy.org,
+                condition: travelPolicy['지원대상'] || '세부 지원 대상 및 신청 절차는 정부24 공식 안내 페이지를 통해 확인하시기 바랍니다.',
+                officialUrl: travelPolicy['상세조회URL'] || 'https://www.gov.kr'
+              };
+            }
+          }
+        } catch (e) {
+          console.warn('행정안전부 공공서비스 API 조회 시도 중:', e);
+        }
+      }
+
+      enriched.apiSourceFlags = { tourSuccess, photoSuccess, policySuccess };
+      return enriched;
+    }
+
+    function initDefaultDates() {
+      const today = new Date();
+      const nextWeek = new Date(today);
+      nextWeek.setDate(today.getDate() + 14);
+      const nextWeekEnd = new Date(nextWeek);
+      nextWeekEnd.setDate(nextWeek.getDate() + 1);
+
+      const formatDate = (d) => d.toISOString().split('T')[0];
+      document.getElementById('start-date').value = formatDate(nextWeek);
+      document.getElementById('end-date').value = formatDate(nextWeekEnd);
+      appState.preferences.startDate = formatDate(nextWeek);
+      appState.preferences.endDate = formatDate(nextWeekEnd);
+    }
+
+    function goToStep(stepNumber) {
+      appState.step = stepNumber;
+      document.getElementById('step-1').classList.add('hidden');
+      document.getElementById('step-2').classList.add('hidden');
+      document.getElementById('step-3').classList.add('hidden');
+
+      const targetSection = document.getElementById(`step-${stepNumber}`);
+      targetSection.classList.remove('hidden');
+
+      const indicator = document.getElementById('page-indicator');
+      if (stepNumber === 1) indicator.textContent = '표지 · COVER';
+      if (stepNumber === 2) indicator.textContent = '01 · 여행 조건 입력';
+      if (stepNumber === 3) indicator.textContent = '02 · 맞춤 추천 결과';
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      lucide.createIcons();
+    }
+
+    // 날짜 관련 인터랙션
+    function toggleDateUndecided() {
+      const isChecked = document.getElementById('date-undecided').checked;
+      appState.preferences.isDateUndecided = isChecked;
+
+      const dateGroup = document.getElementById('date-picker-group');
+      const seasonGroup = document.getElementById('season-picker-group');
+      const durationText = document.getElementById('duration-text');
+
+      if (isChecked) {
+        dateGroup.classList.add('hidden');
+        seasonGroup.classList.remove('hidden');
+        appState.preferences.durationLabel = `${appState.preferences.season} 계절 여행`;
+        durationText.textContent = `${appState.preferences.season} 기준 추천 관광지 및 상시 운영 지원 혜택을 안내합니다.`;
+      } else {
+        dateGroup.classList.remove('hidden');
+        seasonGroup.classList.add('hidden');
+        calculateTripDuration();
+      }
+    }
+
+    function selectSeason(seasonLabel, btn) {
+      appState.preferences.season = seasonLabel;
+      appState.preferences.durationLabel = `${seasonLabel} 계절 여행`;
+      document.querySelectorAll('.season-btn').forEach(b => {
+        b.className = 'season-btn py-2 px-2 rounded-lg border border-borderPaper bg-paper text-xs font-medium hover:border-forest';
+      });
+      btn.className = 'season-btn py-2 px-2 rounded-lg border border-forest bg-forest text-white text-xs font-medium';
+      document.getElementById('duration-text').textContent = `${seasonLabel} 기준 추천 관광지 및 상시 운영 지원 혜택을 안내합니다.`;
+    }
+
+    function calculateTripDuration() {
+      const startVal = document.getElementById('start-date').value;
+      const endVal = document.getElementById('end-date').value;
+      appState.preferences.startDate = startVal;
+      appState.preferences.endDate = endVal;
+
+      if (startVal && endVal) {
+        const start = new Date(startVal);
+        const end = new Date(endVal);
+        const diffDays = Math.round((end - start) / (1000 * 60 * 60 * 24));
+
+        if (diffDays < 0) {
+          document.getElementById('duration-text').textContent = '도착일이 출발일보다 빠릅니다. 날짜를 다시 확인해 주세요.';
+          return;
+        } else if (diffDays === 0) {
+          appState.preferences.durationLabel = '당일치기 여행';
+        } else {
+          appState.preferences.durationLabel = `${diffDays}박 ${diffDays + 1}일 숙박 여행`;
+        }
+        document.getElementById('duration-text').textContent = `${appState.preferences.durationLabel} (기간 내 축제 및 지원사업 기간을 자동 대조합니다)`;
+      }
+    }
+
+    // 인원 및 동행 유형
+    function updatePeopleCount(delta) {
+      const next = Math.max(1, Math.min(20, appState.preferences.peopleCount + delta));
+      appState.preferences.peopleCount = next;
+      document.getElementById('people-count').textContent = next;
+      document.getElementById('budget-people-label').textContent = next;
+      updateTotalBudgetDisplay();
+    }
+
+    function selectCompanion(type, btn) {
+      appState.preferences.companion = type;
+      document.querySelectorAll('.companion-btn').forEach(b => {
+        b.className = 'companion-btn py-2 px-2 rounded-lg border border-borderPaper bg-paper text-xs sm:text-sm font-medium';
+      });
+      btn.className = 'companion-btn py-2 px-2 rounded-lg border border-forest bg-forest text-white text-xs sm:text-sm font-medium';
+
+      const childBox = document.getElementById('child-option-box');
+      if (type === '가족과') {
+        childBox.classList.remove('hidden');
+      } else {
+        childBox.classList.add('hidden');
+        document.getElementById('with-children').checked = false;
+        document.getElementById('with-pets').checked = false;
+        appState.preferences.withChildren = false;
+        appState.preferences.withPets = false;
+      }
+    }
+
+    // 예산 슬라이더
+    function updateSliderTrackFill(val) {
+      const slider = document.getElementById('budget-slider');
+      const min = parseInt(slider.min, 10);
+      const max = parseInt(slider.max, 10);
+      const clamped = Math.min(max, Math.max(min, val));
+      const percent = ((clamped - min) / (max - min)) * 100;
+      slider.style.background = `linear-gradient(to right, #1B4332 0%, #1B4332 ${percent}%, #D6CEBF ${percent}%, #D6CEBF 100%)`;
+    }
+
+    function syncBudgetFromSlider(val) {
+      const num = parseInt(val, 10) || 5;
+      appState.preferences.budgetPerPerson = num;
+      document.getElementById('budget-input').value = num;
+      updateSliderTrackFill(num);
+      updateTotalBudgetDisplay();
+    }
+
+    function syncBudgetFromInput(val) {
+      let num = parseInt(val, 10);
+      if (isNaN(num) || num < 1) num = 1;
+      appState.preferences.budgetPerPerson = num;
+      const sliderVal = Math.min(100, Math.max(5, num));
+      document.getElementById('budget-slider').value = sliderVal;
+      updateSliderTrackFill(sliderVal);
+      updateTotalBudgetDisplay();
+    }
+
+    function updateTotalBudgetDisplay() {
+      const total = appState.preferences.budgetPerPerson * appState.preferences.peopleCount;
+      document.getElementById('total-budget-display').textContent = `${total.toLocaleString()}만 원`;
+    }
+
+    // 여행 취향 태그
+    function toggleThemeTag(btn, themeName) {
+      const idx = appState.preferences.themes.indexOf(themeName);
+      if (idx > -1) {
+        appState.preferences.themes.splice(idx, 1);
+        btn.className = 'theme-tag px-3 py-1.5 rounded-full border border-borderPaper bg-paper text-ink text-xs sm:text-sm font-medium hover:border-forest transition-all';
+      } else {
+        appState.preferences.themes.push(themeName);
+        btn.className = 'theme-tag px-3 py-1.5 rounded-full border border-forest bg-forest text-white text-xs sm:text-sm font-medium transition-all';
+      }
+    }
+
+    // 희망 지역 설정
+    function renderSidoButtons() {
+      const container = document.getElementById('sido-list');
+      const mode = appState.preferences.regionMode;
+      const activeList = mode === 'include'
+        ? appState.preferences.includedRegions
+        : appState.preferences.excludedRegions;
+
+      container.innerHTML = SIDO_OPTIONS.map(sido => {
+        const isSelected = activeList.includes(sido);
+        let btnClass = 'sido-btn px-2.5 py-1 rounded border border-borderPaper bg-paper text-xs text-ink hover:border-forest transition-colors cursor-pointer';
+        if (isSelected && mode === 'include') {
+          btnClass = 'sido-btn px-2.5 py-1 rounded border border-forest bg-forest text-white text-xs font-semibold cursor-pointer';
+        } else if (isSelected && mode === 'exclude') {
+          btnClass = 'sido-btn px-2.5 py-1 rounded border border-rose-700 bg-rose-700 text-white text-xs font-semibold cursor-pointer';
+        }
+        return `<button type="button" onclick="toggleSidoSelection('${sido}')" class="${btnClass}">${sido}</button>`;
+      }).join('');
+
+      updateRegionCountBadges();
+    }
+
+    function updateRegionCountBadges() {
+      const incCount = appState.preferences.includedRegions.length;
+      const excCount = appState.preferences.excludedRegions.length;
+
+      const incBadge = document.getElementById('include-count-badge');
+      const excBadge = document.getElementById('exclude-count-badge');
+
+      if (incCount > 0) {
+        incBadge.textContent = incCount;
+        incBadge.classList.remove('hidden');
+      } else {
+        incBadge.classList.add('hidden');
+      }
+
+      if (excCount > 0) {
+        excBadge.textContent = excCount;
+        excBadge.classList.remove('hidden');
+      } else {
+        excBadge.classList.add('hidden');
+      }
+    }
+
+    function setRegionMode(mode, btn) {
+      appState.preferences.regionMode = mode;
+
+      const buttons = document.querySelectorAll('.region-mode-btn');
+      buttons[0].className = 'region-mode-btn w-full py-2 px-3 rounded-lg border border-borderPaper bg-paper text-ink text-xs sm:text-sm font-medium cursor-pointer';
+      buttons[1].className = 'region-mode-btn py-2 px-2.5 rounded-lg border border-borderPaper bg-paper text-ink text-xs sm:text-sm font-medium flex items-center justify-center gap-1.5 cursor-pointer';
+      buttons[2].className = 'region-mode-btn py-2 px-2.5 rounded-lg border border-borderPaper bg-paper text-ink text-xs sm:text-sm font-medium flex items-center justify-center gap-1.5 cursor-pointer';
+
+      if (mode === 'all') {
+        btn.className = 'region-mode-btn w-full py-2 px-3 rounded-lg border border-forest bg-forest text-white text-xs sm:text-sm font-medium cursor-pointer';
+      } else {
+        btn.className = 'region-mode-btn py-2 px-2.5 rounded-lg border border-forest bg-forest text-white text-xs sm:text-sm font-medium flex items-center justify-center gap-1.5 cursor-pointer';
+      }
+
+      const box = document.getElementById('region-selector-box');
+      const guide = document.getElementById('region-selector-guide');
+      if (mode === 'all') {
+        box.classList.add('hidden');
+      } else {
+        box.classList.remove('hidden');
+        guide.textContent = mode === 'include'
+          ? '✅ 여행하고 싶은 시·도를 선택해 주세요'
+          : '🚫 추천에서 제외하고 싶은 시·도를 선택해 주세요';
+        renderSidoButtons();
+      }
+    }
+
+    function toggleSidoSelection(sido) {
+      const mode = appState.preferences.regionMode;
+      const targetArray = mode === 'include'
+        ? appState.preferences.includedRegions
+        : appState.preferences.excludedRegions;
+
+      const idx = targetArray.indexOf(sido);
+      if (idx > -1) {
+        targetArray.splice(idx, 1);
+      } else {
+        targetArray.push(sido);
+      }
+      renderSidoButtons();
+    }
+
+    function clearCurrentRegionSelection() {
+      const mode = appState.preferences.regionMode;
+      if (mode === 'include') {
+        appState.preferences.includedRegions = [];
+      } else if (mode === 'exclude') {
+        appState.preferences.excludedRegions = [];
+      }
+      renderSidoButtons();
+    }
+
+    function selectTransport(mode, btn) {
+      appState.preferences.transport = mode;
+      document.querySelectorAll('.transport-btn').forEach(b => {
+        b.className = 'transport-btn py-1.5 px-1.5 rounded-lg border border-borderPaper bg-paper text-ink text-xs font-medium';
+      });
+      btn.className = 'transport-btn py-1.5 px-1.5 rounded-lg border border-forest bg-forest text-white text-xs font-medium';
+    }
+
+    // =========================================================================
+    // 5. 추천서 발행 및 "다른 추천 여행지 보기" 순환 렌더링
+    // =========================================================================
+    async function handleGenerateRecommendation(e) {
+      e.preventDefault();
+
+      const submitBtn = document.getElementById('submit-recommend-btn');
+      const submitText = document.getElementById('submit-btn-text');
+      submitBtn.disabled = true;
+      submitBtn.classList.add('opacity-75');
+      submitText.textContent = appState.apiKey
+        ? '공공데이터포털 실시간 정보 조회 중...'
+        : '맞춤 추천서 발행 중...';
+
+      appState.preferences.withChildren = document.getElementById('with-children').checked;
+      appState.preferences.withPets = document.getElementById('with-pets').checked;
+      appState.preferences.freeMood = document.getElementById('free-mood-input').value.trim();
+      appState.preferences.residenceSido = document.getElementById('residence-sido').value;
+      appState.preferences.residenceSigungu = document.getElementById('residence-sigungu').value.trim();
+
+      // 전체 후보군을 적합도 점수순으로 정렬하여 저장
+      appState.allScoredDestinations = getScoredDestinationPool(appState.preferences);
+      appState.pageOffset = 0;
+
+      await loadAndRenderCurrentBatch(0);
+
+      submitBtn.disabled = false;
+      submitBtn.classList.remove('opacity-75');
+      submitText.textContent = '나만의 여행 추천서 발행하기';
+
+      appState.isCompareMode = false;
+      document.getElementById('cards-view').classList.remove('hidden');
+      document.getElementById('compare-view').classList.add('hidden');
+      document.getElementById('compare-btn-text').textContent = '표 형태로 전환';
+
+      goToStep(3);
+    }
+
+    // 하단 중앙 [다른 추천 여행지 보기] 버튼 클릭 시 다음 3곳 로드
+    async function showNextDestinations() {
+      const pool = appState.allScoredDestinations;
+      if (!pool || pool.length <= 3) return;
+
+      const nextBtn = document.getElementById('next-batch-btn');
+      const nextText = document.getElementById('next-batch-text');
+      nextBtn.disabled = true;
+      nextBtn.classList.add('opacity-75');
+      nextText.textContent = '다른 추천 여행지 불러오는 중...';
+
+      const nextOffset = (appState.pageOffset + 3) % pool.length;
+      appState.pageOffset = nextOffset;
+
+      await loadAndRenderCurrentBatch(nextOffset);
+
+      nextBtn.disabled = false;
+      nextBtn.classList.remove('opacity-75');
+      nextText.textContent = '다른 추천 여행지 보기';
+
+      document.getElementById('cards-view').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    async function loadAndRenderCurrentBatch(offset) {
+      const pool = appState.allScoredDestinations;
+      const batch = [];
+      const count = Math.min(3, pool.length);
+      for (let i = 0; i < count; i++) {
+        batch.push(pool[(offset + i) % pool.length]);
+      }
+
+      let finalResults = batch;
+      const liveBanner = document.getElementById('live-api-banner');
+      const liveStatusText = document.getElementById('live-api-status-text');
+
+      if (appState.apiKey) {
+        finalResults = await Promise.all(
+          batch.map(dest => fetchPublicApisForDestination(dest, appState.apiKey, appState.preferences))
+        );
+
+        const anySuccess = finalResults.some(
+          r => r.apiSourceFlags?.tourSuccess || r.apiSourceFlags?.photoSuccess || r.apiSourceFlags?.policySuccess
+        );
+
+        if (anySuccess) {
+          liveBanner.className = 'xl:col-span-4 px-4 py-3 rounded-xl border text-xs flex items-center justify-between gap-2 bg-emerald-50 border-emerald-300 text-emerald-900';
+          liveStatusText.innerHTML = '🟢 <strong>실시간 API 연동 완료</strong> (관광공사·정부24)';
+        } else {
+          liveBanner.className = 'xl:col-span-4 px-4 py-3 rounded-xl border text-xs flex items-center justify-between gap-2 bg-amber-50 border-amber-300 text-amber-900';
+          liveStatusText.innerHTML = '🟡 <strong>기본 가이드 데이터 표시</strong> (키 또는 네트워크 확인)';
+        }
+      } else {
+        liveBanner.className = 'xl:col-span-4 px-4 py-3 rounded-xl border text-xs flex items-center justify-between gap-2 bg-paperDark border-borderPaper text-ink';
+        liveStatusText.innerHTML = '⚪ <strong>기본 가이드 모드</strong> (검증 데이터 기준)';
+      }
+
+      appState.currentResults = finalResults;
+
+      // 후보지가 3곳 이하일 경우 다음 버튼 안내 조정
+      const nextBtn = document.getElementById('next-batch-btn');
+      if (pool.length <= 3) {
+        nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        nextBtn.disabled = true;
+        document.getElementById('next-batch-text').textContent = '선택 지역의 모든 후보 표시됨';
+      } else {
+        nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        nextBtn.disabled = false;
+        const currentPage = Math.floor(offset / 3) + 1;
+        const totalPages = Math.ceil(pool.length / 3);
+        document.getElementById('next-batch-text').textContent = `다른 추천 여행지 보기 (${currentPage}/${totalPages})`;
+      }
+
+      renderSummaryChips(appState.preferences);
+      renderRecommendationCards(finalResults, appState.preferences, offset);
+      renderCompareTable(finalResults);
+    }
+
+    function getScoredDestinationPool(prefs) {
+      let candidates = TRAVEL_DESTINATIONS_DB.filter(dest => {
+        if (prefs.regionMode === 'include' && prefs.includedRegions.length > 0) {
+          return prefs.includedRegions.includes(dest.regionCode);
+        }
+        if (prefs.regionMode === 'exclude' && prefs.excludedRegions.length > 0) {
+          return !prefs.excludedRegions.includes(dest.regionCode);
+        }
+        return true;
+      });
+
+      if (candidates.length === 0) {
+        candidates = [...TRAVEL_DESTINATIONS_DB];
+      }
+
+      const scored = candidates.map(dest => {
+        let score = 0;
+        prefs.themes.forEach(t => {
+          if (dest.tags.includes(t)) score += 3;
+        });
+        if (dest.transportFriendly.includes(prefs.transport)) score += 2;
+        if (prefs.withChildren && dest.kidFriendly) score += 2;
+        if (prefs.withPets && dest.petFriendly) score += 2;
+        if (prefs.budgetPerPerson <= 25 && dest.budgetLevel === 'low-mid') score += 2;
+        if (prefs.freeMood) {
+          if (/바다|해변|섬/.test(prefs.freeMood) && dest.tags.includes('바다·해변')) score += 2;
+          if (/산|숲|조용|소도시/.test(prefs.freeMood) && dest.tags.includes('조용한 소도시')) score += 2;
+          if (/역사|고궁|한옥|골목/.test(prefs.freeMood) && dest.tags.includes('역사·문화')) score += 2;
+        }
+        return { dest, score };
+      });
+
+      scored.sort((a, b) => (b.score - a.score) || (Math.random() - 0.5));
+      return scored.map(item => item.dest);
+    }
+
+    function renderSummaryChips(prefs) {
+      const container = document.getElementById('summary-chips');
+      const chips = [
+        `📅 ${prefs.durationLabel}`,
+        `👥 ${prefs.peopleCount}명 (${prefs.companion}${prefs.withChildren ? '·어린이' : ''}${prefs.withPets ? '·애견' : ''})`,
+        `💰 1인 ${prefs.budgetPerPerson}만 원`,
+        `🚗 ${prefs.transport}`
+      ];
+
+      if (prefs.themes.length > 0) {
+        chips.push(`🏷️ ${prefs.themes.slice(0, 3).join(', ')}${prefs.themes.length > 3 ? ' 외' : ''}`);
+      }
+      if (prefs.residenceSido) {
+        chips.push(`🏠 ${prefs.residenceSido}`);
+      }
+
+      container.innerHTML = chips.map(text =>
+        `<span class="px-2 py-0.5 rounded bg-paper border border-borderPaper font-medium">${text}</span>`
+      ).join('');
+    }
+
+    function getStampBadgeStyle(status) {
+      if (status === 'eligible') {
+        return { bg: 'bg-emerald-50 text-emerald-800 border-emerald-600', icon: '🟢' };
+      }
+      if (status === 'check') {
+        return { bg: 'bg-amber-50 text-amber-800 border-amber-600', icon: '🟡' };
+      }
+      return { bg: 'bg-slate-100 text-slate-700 border-slate-400', icon: '⚪' };
+    }
+
+    function getIllustrationSVG(theme) {
+      if (theme === 'mountain') {
+        return `<svg viewBox="0 0 320 120" class="w-full h-36 rounded-xl border border-borderPaper bg-[#E9F0EA]">
+          <circle cx="260" cy="30" r="15" fill="#FDE68A"/>
+          <path d="M0 120 L75 38 L150 120 Z" fill="#52796F"/>
+          <path d="M95 120 L185 28 L280 120 Z" fill="#2D6A4F"/>
+          <path d="M0 102 Q80 92 160 105 T320 98 L320 120 L0 120 Z" fill="#1B4332"/>
+        </svg>`;
+      }
+      if (theme === 'bay') {
+        return `<svg viewBox="0 0 320 120" class="w-full h-36 rounded-xl border border-borderPaper bg-[#E6F0F5]">
+          <circle cx="65" cy="32" r="15" fill="#FCD34D"/>
+          <path d="M120 82 Q170 44 230 82 Z" fill="#40916C"/>
+          <path d="M0 82 Q80 74 160 84 T320 78 L320 120 L0 120 Z" fill="#3B82F6" opacity="0.35"/>
+          <path d="M0 96 Q90 88 180 98 T320 92 L320 120 L0 120 Z" fill="#1D4ED8" opacity="0.45"/>
+        </svg>`;
+      }
+      return `<svg viewBox="0 0 320 120" class="w-full h-36 rounded-xl border border-borderPaper bg-[#F5EFE6]">
+        <circle cx="255" cy="32" r="16" fill="#F59E0B" opacity="0.7"/>
+        <path d="M20 102 Q95 48 170 102 Z" fill="#6B705C"/>
+        <path d="M130 102 Q215 44 300 102 Z" fill="#3F4238"/>
+        <rect x="0" y="98" width="320" height="22" fill="#A5A58D"/>
+      </svg>`;
+    }
+
+    // 가로 3열 나란히 비교 카드 렌더링
+    function renderRecommendationCards(destinations, prefs, offset = 0) {
+      const container = document.getElementById('cards-view');
+
+      container.innerHTML = destinations.map((dest, index) => {
+        const badgeStyle = getStampBadgeStyle(dest.policy.status);
+        const optionNumber = String(offset + index + 1).padStart(2, '0');
+
+        const mediaBlock = dest.photoUrl
+          ? `<div class="relative overflow-hidden rounded-xl border border-borderPaper h-36 bg-paperDark">
+               <img src="${dest.photoUrl}" alt="${dest.name} 대표 관광 사진" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+               <div style="display:none;">${getIllustrationSVG(dest.illustrationTheme)}</div>
+               <span class="absolute bottom-2 right-2 text-[10px] px-2 py-0.5 rounded bg-black/65 text-white">📸 관광공사 API</span>
+             </div>`
+          : `<div class="relative">
+               ${getIllustrationSVG(dest.illustrationTheme)}
+               <span class="absolute bottom-2 right-2 text-[10px] px-2 py-0.5 rounded bg-paper/90 border border-borderPaper text-inkLight">지역 일러스트</span>
+             </div>`;
+
+        return `
+          <article class="bg-white/95 rounded-2xl border border-borderPaper shadow-card overflow-hidden flex flex-col justify-between fade-in">
+            <div>
+              <!-- 카드 상단 헤더 -->
+              <div class="bg-forest text-white px-5 py-3.5">
+                <div class="flex items-center justify-between gap-2 mb-1">
+                  <span class="font-mono text-[11px] px-2 py-0.5 rounded bg-white/15 tracking-wider">OPTION ${optionNumber}</span>
+                  <span class="text-[11px] text-emerald-200">${dest.regionCode}권역</span>
+                </div>
+                <h3 class="font-serif text-xl font-bold leading-snug">${dest.name}</h3>
+                <p class="text-xs text-emerald-100/90 mt-0.5 line-clamp-1">${dest.subtitle}</p>
+              </div>
+
+              <div class="p-5 space-y-4">
+                <!-- 대표 이미지/일러스트 -->
+                ${mediaBlock}
+
+                <!-- 태그 목록 -->
+                <div class="flex flex-wrap gap-1">
+                  ${dest.tags.map(tag => `<span class="text-[11px] px-2 py-0.5 rounded-full bg-paperDark text-inkLight font-medium">#${tag}</span>`).join('')}
+                </div>
+
+                <!-- 맞춤 추천 이유 -->
+                <div>
+                  <div class="text-[11px] font-bold text-terracotta uppercase tracking-wider flex items-center gap-1 mb-1">
+                    <i data-lucide="sparkles" class="w-3 h-3"></i>
+                    <span>맞춤 추천 이유</span>
+                  </div>
+                  <p class="text-xs text-ink leading-relaxed bg-paper p-3 rounded-xl border border-borderPaper">
+                    ${dest.matchReasonTemplate(prefs)}
+                  </p>
+                </div>
+
+                <!-- 지역 여행 지원 혜택 -->
+                <div class="bg-paper/90 rounded-xl p-3.5 border border-borderPaper space-y-2">
+                  <div class="flex items-center justify-between gap-1.5">
+                    <span class="text-[11px] font-bold text-forest flex items-center gap-1">
+                      <i data-lucide="ticket" class="w-3.5 h-3.5"></i>
+                      <span>지원 혜택</span>
+                    </span>
+                    <span class="stamp-badge text-[10px] font-bold px-2 py-0.5 rounded ${badgeStyle.bg}">
+                      ${badgeStyle.icon} ${dest.policy.statusLabel}
+                    </span>
+                  </div>
+                  <h4 class="font-serif font-bold text-sm text-ink leading-snug">${dest.policy.title}</h4>
+                  <p class="text-xs text-inkLight leading-relaxed line-clamp-2">${dest.policy.benefit}</p>
+                  <button type="button" onclick="openPolicyModal('${dest.id}')" class="w-full mt-1 py-2 px-3 rounded-lg bg-ink hover:bg-slate-700 text-white text-xs font-medium inline-flex items-center justify-center gap-1.5 cursor-pointer">
+                    <span>지원 조건 및 공식 출처</span>
+                    <i data-lucide="external-link" class="w-3 h-3"></i>
+                  </button>
+                </div>
+
+                <!-- 주요 추천 관광지 -->
+                <div>
+                  <div class="text-[11px] font-bold text-ink uppercase tracking-wider mb-2 flex items-center gap-1">
+                    <i data-lucide="map-pin" class="w-3 h-3 text-terracotta"></i>
+                    <span>주요 추천 관광지</span>
+                  </div>
+                  <div class="space-y-1.5">
+                    ${dest.spots.map(spot => `
+                      <div class="p-2.5 rounded-lg bg-white border border-borderPaper">
+                        <div class="flex items-center justify-between gap-1 mb-0.5">
+                          <span class="font-serif font-bold text-xs text-ink">${spot.name}</span>
+                          <span class="text-[10px] font-medium text-terracotta shrink-0">${spot.category}</span>
+                        </div>
+                        <p class="text-[11px] text-inkLight leading-snug line-clamp-2">${spot.desc}</p>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 카드 하단 예상 경비 참고 -->
+            <div class="px-5 py-3 bg-paperDark/60 border-t border-borderPaper text-[11px] text-inkLight">
+              💡 ${dest.costNote}
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    // 비교표 렌더링
+    function renderCompareTable(destinations) {
+      const head = document.getElementById('compare-table-head');
+      const body = document.getElementById('compare-table-body');
+
+      head.innerHTML = `
+        <th class="py-3 px-3 w-32 text-inkLight font-sans text-xs">비교 항목</th>
+        ${destinations.map((d, i) => `<th class="py-3 px-3 text-base font-bold text-forest">0${i + 1}. ${d.name}</th>`).join('')}
+      `;
+
+      body.innerHTML = `
+        <tr>
+          <td class="py-3.5 px-3 font-semibold text-inkLight">핵심 매력</td>
+          ${destinations.map(d => `<td class="py-3.5 px-3 text-ink">${d.subtitle}</td>`).join('')}
+        </tr>
+        <tr>
+          <td class="py-3.5 px-3 font-semibold text-inkLight">혜택 상태</td>
+          ${destinations.map(d => {
+            const st = getStampBadgeStyle(d.policy.status);
+            return `<td class="py-3.5 px-3"><span class="inline-block text-xs font-bold px-2.5 py-0.5 rounded border ${st.bg}">${st.icon} ${d.policy.statusLabel}</span></td>`;
+          }).join('')}
+        </tr>
+        <tr>
+          <td class="py-3.5 px-3 font-semibold text-inkLight">주요 지원 정책</td>
+          ${destinations.map(d => `<td class="py-3.5 px-3 font-medium text-ink">${d.policy.title}<br><span class="text-xs text-inkLight">${d.policy.benefit}</span></td>`).join('')}
+        </tr>
+        <tr>
+          <td class="py-3.5 px-3 font-semibold text-inkLight">추천 관광 스팟</td>
+          ${destinations.map(d => `<td class="py-3.5 px-3 text-ink">${d.spots.map(s => `· ${s.name}`).join('<br>')}</td>`).join('')}
+        </tr>
+        <tr>
+          <td class="py-3.5 px-3 font-semibold text-inkLight">공식 출처</td>
+          ${destinations.map(d => `<td class="py-3.5 px-3"><button onclick="openPolicyModal('${d.id}')" class="text-xs underline text-forest font-semibold cursor-pointer">공식 안내 보기 →</button></td>`).join('')}
+        </tr>
+      `;
+    }
+
+    function toggleCompareView() {
+      appState.isCompareMode = !appState.isCompareMode;
+      const cardsView = document.getElementById('cards-view');
+      const compareView = document.getElementById('compare-view');
+      const btnText = document.getElementById('compare-btn-text');
+
+      if (appState.isCompareMode) {
+        cardsView.classList.add('hidden');
+        compareView.classList.remove('hidden');
+        btnText.textContent = '3열 카드 보기로 전환';
+      } else {
+        cardsView.classList.remove('hidden');
+        compareView.classList.add('hidden');
+        btnText.textContent = '표 형태로 전환';
+      }
+    }
+
+    // 모달 제어
+    function openPolicyModal(destId) {
+      const sourceList = appState.currentResults.length > 0 ? appState.currentResults : TRAVEL_DESTINATIONS_DB;
+      const dest = sourceList.find(d => d.id === destId);
+      if (!dest) return;
+
+      const st = getStampBadgeStyle(dest.policy.status);
+      const badgeEl = document.getElementById('modal-badge');
+      badgeEl.className = `inline-block text-xs font-bold px-2.5 py-0.5 rounded border mb-1.5 ${st.bg}`;
+      badgeEl.textContent = `${st.icon} ${dest.policy.statusLabel}`;
+
+      document.getElementById('modal-title').textContent = dest.policy.title;
+      document.getElementById('modal-benefit').textContent = dest.policy.benefit;
+      document.getElementById('modal-period').textContent = dest.policy.period;
+      document.getElementById('modal-org').textContent = dest.policy.org;
+      document.getElementById('modal-condition').textContent = dest.policy.condition;
+      document.getElementById('modal-official-link').href = dest.policy.officialUrl;
+
+      const modal = document.getElementById('policy-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closePolicyModal() {
+      const modal = document.getElementById('policy-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function openApiSetupModal() {
+      const modal = document.getElementById('api-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeApiSetupModal() {
+      const modal = document.getElementById('api-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  </script>
+</body>
+</html>
